@@ -13,6 +13,7 @@
 #include <queue>
 #include <set>
 #include <list>
+#include <map>
 #include <utility>
 
 using namespace std;
@@ -269,6 +270,38 @@ int Board::removeGroup(std::set<std::pair<int, int> > tiles) {
         this->setPosition(it->first, it->second, 0);
     }
     return tiles.size()*(tiles.size() - 1);
+}
+
+// Realiza una estimación optimista del valor del tablero en el mejor caso.
+int Board::funcionCota() const
+{
+    int valorCota = 0;
+    int total = *(this->rows) * *(this->columns);
+    map<int, int> cantidad;
+
+    // Recorremos el tablero contando únicamente la cantidad de fichas de cada color.
+    for (int i = 0; i < total; i++)
+    {
+        if (board[i] != 0)
+        {
+            // Si ya se había leído el color, se incrementa; si no estaba, se establece a 1 la cantidad de ese color.
+            if (cantidad.count(board[i]) > 0)
+            {
+                cantidad[board[i]] = cantidad[board[i]] + 1;
+            }
+            else
+            {
+                cantidad[board[i]] = 1;
+            }
+        }
+    }
+
+    // Se calcula la puntuación considerando que siempre se deshacen esos grupos de fichas.
+    for (map<int, int>::iterator i = cantidad.begin(); i != cantidad.end(); ++i) {
+        valorCota += (*i).second * ((*i).second - 1);
+    }
+
+    return valorCota;
 }
 
 void Board::showMoves(std::list<std::set<std::pair<int, int> > > lista) {
