@@ -13,7 +13,13 @@
 #include "Board.h"
 
 using namespace std;
-
+/*
+ * board: Tablero de juego.
+ * maxMoves: Secuencia de movimientos que ha llevado a la puntuacion maxima alcanzada.
+ * maxScore: Puntuacion maxima alcanzada.
+ * actualMoves: Secuencia actual de movimientos.
+ * actualScore: Puntuacion asociada a la secuencia actual de movimientos.
+ */
 void backtracking(Board board, list<pair<int, int> > &maxMoves, int &maxScore, list<pair<int, int> > actualMoves, int actualScore);
 
 #endif	/* ALGORITHMS_H */
