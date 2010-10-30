@@ -11,16 +11,11 @@
 #include "Board.h"
 
 #include "algorithms.h"
+
 using namespace std;
 
 int main(int argc, char** argv) {
-    Board *board = new Board(argv[1]);
-    //pideme los datos joder
-    //Board *board = new Board("mierda.txt");
-    //board->show();
-
-    //board1->show();
-
+    Board *board = new Board(argv[1]);    
     if (false) {//para jugar de forma manual
         int x, y;
         int puntos = 0;
@@ -42,10 +37,8 @@ int main(int argc, char** argv) {
         int maxScore, actualScore;
         maxScore = 0;
         actualScore = 0;
-
-        backtracking(*board, max, maxScore, actual, actualScore);
+        backtracking::run(*board, actual, actualScore);
     }
-    //board->show();
     cout << endl;
     delete board;
 

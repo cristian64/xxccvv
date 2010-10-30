@@ -60,11 +60,11 @@ public:
      * pero el guion pide un formato determinado que, por construccion, corresponde
      * con la primera baldosa del grupo.
      */
-    static std::pair<int, int> getMove(std::set<std::pair<int, int> > groupMove);
+    std::pair<int, int> getMove(const std::set<std::pair<int, int> > groupMove);
 
     //calcula la puntuacion asociada a un grupo
     //deberia ser static
-    int score(std::set<std::pair<int, int> > tiles);
+    static int score(std::set<std::pair<int, int> > tiles);
 
     /// Realiza una estimación optimista del valor del tablero en el mejor caso.
     /**

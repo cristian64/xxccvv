@@ -70,11 +70,11 @@ Board& Board::operator=(const Board& orig) {
 }
 
 bool Board::operator==(const Board& o) {
-    if (*this->rows != *o.rows && *this->columns != *o.columns && *this->colors != *o.colors) {
+    if (*this->rows != *o.rows || *this->columns != *o.columns || *this->colors != *o.colors) {
         return false;
     }
 
-    if (memcmp(this->board, o.board, *this->rows * * this->columns * sizeof (int) != 0)) {
+    if (memcmp(this->board, o.board, *this->rows * (* this->columns) * sizeof (int) != 0)) {
         return false;
     }
     return true;
@@ -88,37 +88,30 @@ Board::~Board() {
 }
 
 int* Board::getBoard() const {
-
     return board;
 }
 
 int Board::getColors() const {
-
     return *colors;
 }
 
 void Board::setColors(int colors) {
-
     *this->colors = colors;
 }
 
 int Board::getColumns() const {
-
     return *columns;
 }
 
 void Board::setColumns(int columns) {
-
     *this->columns = columns;
 }
 
 int Board::getRows() const {
-
     return *rows;
 }
 
 void Board::setRows(int rows) {
-
     *this->rows = rows;
 }
 
@@ -314,7 +307,6 @@ void Board::showMoves(std::list<std::set<std::pair<int, int> > > lista) {
         }
     }
 }
-
 
 void Board::showMove(set<std::pair<int, int> > move) {
     set<pair<int, int> >::iterator it2;

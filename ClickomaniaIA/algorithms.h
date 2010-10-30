@@ -22,5 +22,15 @@ using namespace std;
  */
 void backtracking(Board board, list<pair<int, int> > &maxMoves, int &maxScore, list<pair<int, int> > actualMoves, int actualScore);
 
+class backtracking {
+private:
+
+    static list<pair<int, int> > maxMoves;
+    static int &maxScore;
+
+public:
+    static void run(Board board, list<pair<int, int> > currentMoves, int currentScore);
+
+};
 #endif	/* ALGORITHMS_H */
 
