@@ -15,6 +15,7 @@ using namespace std;
 
 int main(int argc, char** argv) {
     Board *board = new Board(argv[1]);
+    //pideme los datos joder
     //Board *board = new Board("mierda.txt");
     //board->show();
 
