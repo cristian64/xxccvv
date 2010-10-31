@@ -5,7 +5,7 @@ using namespace std;
 int Algorithms::maxScore = 0;
 list<pair<int, int> > Algorithms::maxMoves;
 
-void Algorithms::backtracking(Board board, list<pair<int, int> > currentMoves, int currentScore) {
+void Algorithms::backtracking(Board &board, list<pair<int, int> > &currentMoves, int currentScore) {
 
     list<set<pair<int, int> > > moves = board.getGroupMoves();
     if (moves.size() == 0) {//la partida acaba cuando no quedan grupos
@@ -40,7 +40,7 @@ void Algorithms::backtracking(Board board, list<pair<int, int> > currentMoves, i
     return;
 }
 
-void Algorithms::bound(Board board, list<pair<int, int> > currentMoves, int currentScore) {
+void Algorithms::bound(Board &board, list<pair<int, int> > &currentMoves, int currentScore) {
     list<set<pair<int, int> > > moves = board.getGroupMoves();
     if (moves.size() == 0) {//la partida acaba cuando no quedan grupos
         /*

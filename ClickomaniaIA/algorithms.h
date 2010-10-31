@@ -29,9 +29,10 @@ private:
     static int maxScore;
 
 public:
-    static void backtracking(Board board, list<pair<int, int> > currentMoves, int currentScore);
-    static void bound(Board board, list<pair<int, int> > actualMoves, int actualScore);
-    
+    static void backtracking(Board &board, list<pair<int, int> > &currentMoves, int currentScore);
+    static void bound(Board &board, list<pair<int, int> > &currentMoves, int currentScore);
+
+
 };
 #endif	/* ALGORITHMS_H */
 
