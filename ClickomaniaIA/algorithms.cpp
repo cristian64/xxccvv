@@ -33,7 +33,7 @@ void Algorithms::backtracking(Board &board, list<pair<int, int> > &currentMoves,
             Board temp = board;
             temp.removeGroup(*it);
             temp.gravity();
-            backtracking(temp, currentMoves, currentScore + board.score(*it));
+            Algorithms::backtracking(temp, currentMoves, currentScore + board.score(*it));
             currentMoves.pop_back();
         }
     }
@@ -68,7 +68,7 @@ void Algorithms::bound(Board &board, list<pair<int, int> > &currentMoves, int cu
             temp.removeGroup(*it);
             temp.gravity();
             if (temp.funcionCota() + currentScore > Algorithms::maxScore)
-                backtracking(temp, currentMoves, currentScore + board.score(*it));
+                Algorithms::bound(temp, currentMoves, currentScore + board.score(*it));
             currentMoves.pop_back();
         }
     }
