@@ -43,6 +43,11 @@ void Algorithms::backtracking(Board &board, list<pair<int, int> > &currentMoves,
     return;
 }
 
+bool comparador(const set<pair<int, int> > &g1, const set<pair<int, int> > &g2)
+{
+    return g1.size() < g2.size();
+}
+
 void Algorithms::bound(Board &board, list<pair<int, int> > &currentMoves, int currentScore) {
     llamadasRecursivas++;
     list<set<pair<int, int> > > moves = board.getGroupMoves();
@@ -54,6 +59,7 @@ void Algorithms::bound(Board &board, list<pair<int, int> > &currentMoves, int cu
             Algorithms::showMax();
         }
     } else {
+        moves.sort(comparador);
         list<set<pair<int, int> > >::iterator it;
         for (it = moves.begin(); it != moves.end(); it++) {
             currentMoves.push_back(*it->begin());
