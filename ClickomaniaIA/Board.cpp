@@ -131,7 +131,7 @@ void Board::gravity() {
             int k = i - 1;
             if (k >= 0) {
                 if (this->getPosition(j, k) == 0) {
-                    while ((k < *this->rows)) {//desplaza las baldosas una posicion
+                    while ((k < *this->rows - 1)) {//desplaza las baldosas una posicion
                         this->setPosition(j, k, this->getPosition(j, k + 1));
                         k++;
                     }
@@ -147,6 +147,7 @@ void Board::gravity() {
             }
         }
     }
+
     //lateral
     for (int j = *this->columns - 2; j >= 0; j--) {
         if (this->getPosition(j, 0) != 0) { // si la actual tiene baldosas
@@ -266,34 +267,23 @@ int Board::removeGroup(std::set<std::pair<int, int> > tiles) {
 }
 
 // Realiza una estimación optimista del valor del tablero en el mejor caso.
-int Board::funcionCota() const
-{
+
+int Board::funcionCota() const {
     int valorCota = 0;
     int total = *(this->rows) * *(this->columns);
     map<int, int> cantidad;
+    int ocurrencias[*this->colors];
+    memset(ocurrencias, 0, sizeof (int) * (*this->colors));
 
     // Recorremos el tablero contando únicamente la cantidad de fichas de cada color.
-    for (int i = 0; i < total; i++)
-    {
-        if (board[i] != 0)
-        {
-            // Si ya se había leído el color, se incrementa; si no estaba, se establece a 1 la cantidad de ese color.
-            if (cantidad.count(board[i]) > 0)
-            {
-                cantidad[board[i]] = cantidad[board[i]] + 1;
-            }
-            else
-            {
-                cantidad[board[i]] = 1;
-            }
-        }
+    for (int i = 0; i < total; i++) {
+        ocurrencias[this->board[i] - 1]++;
     }
 
-    // Se calcula la puntuación considerando que siempre se deshacen esos grupos de fichas.
-    for (map<int, int>::iterator i = cantidad.begin(); i != cantidad.end(); ++i) {
-        valorCota += (*i).second * ((*i).second - 1);
-    }
+    for (int i = 0; i< *this->colors; i++) {
 
+        valorCota += ocurrencias[i]*(ocurrencias[i] - 1);
+    }
     return valorCota;
 }
 
@@ -301,6 +291,7 @@ void Board::showMoves(std::list<std::set<std::pair<int, int> > > lista) {
     list<set<std::pair<int, int> > >::iterator it1;
     for (it1 = lista.begin(); it1 != lista.end(); it1++) {
         if (it1->size() > 0) {
+
             cout << "MOV: ";
             Board::showMove(*it1);
             cout << "Puntuacion: " << it1->size() * (it1->size() - 1) << endl;
@@ -311,6 +302,7 @@ void Board::showMoves(std::list<std::set<std::pair<int, int> > > lista) {
 void Board::showMove(set<std::pair<int, int> > move) {
     set<pair<int, int> >::iterator it2;
     for (it2 = move.begin(); it2 != move.end(); it2++) {
+
         cout << "(" << it2->first << ", " << it2->second << "), ";
     }
 }

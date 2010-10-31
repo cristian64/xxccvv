@@ -71,18 +71,14 @@ void Algorithms::bound(Board &board, list<pair<int, int> > &currentMoves, int cu
             Board temp = board;
             temp.removeGroup(*it);
             temp.gravity();
-            if (temp.funcionCota() + currentScore > Algorithms::maxScore)
-            {
+            if (temp.funcionCota() + currentScore > Algorithms::maxScore) {
                 bound(temp, currentMoves, currentScore + board.score(*it));
-            }
-            else
-            {
+            } else {
                 cantidadPodas++;
             }
 
             int tiempoActual = time(NULL);
-            if (tiempoActual > tiempoAnterior + 3)
-            {
+            if (tiempoActual > tiempoAnterior + 3) {
                 tiempoAnterior = tiempoActual;
                 // INTRODUCIR LAS COSAS QUE SE HARAN CADA 3 SEGUNDOS
                 cout << "Cantidad de podas: " << cantidadPodas << endl;
