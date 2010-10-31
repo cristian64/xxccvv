@@ -15,7 +15,7 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-    Board *board = new Board(argv[1]);    
+    Board *board = new Board(argv[1]);
     if (false) {//para jugar de forma manual
         int x, y;
         int puntos = 0;
@@ -33,11 +33,11 @@ int main(int argc, char** argv) {
             cout << puntos << endl;
         } while (x != -1);
     } else {
-        list<pair<int, int> > max, actual;
-        int maxScore, actualScore;
-        maxScore = 0;
-        actualScore = 0;
-        backtracking::run(*board, actual, actualScore);
+        list<pair<int, int> > actual;
+        int actualScore = 0;
+        //Algorithms::backtracking(*board, actual, actualScore);
+        Algorithms::bound(*board, actual, actualScore);
+
     }
     cout << endl;
     delete board;
