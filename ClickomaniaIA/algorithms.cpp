@@ -47,13 +47,6 @@ void Algorithms::bound(Board &board, list<pair<int, int> > &currentMoves, int cu
     llamadasRecursivas++;
     list<set<pair<int, int> > > moves = board.getGroupMoves();
     if (moves.size() == 0) {//la partida acaba cuando no quedan grupos
-        /*
-        list<pair<int, int> >::iterator it;
-        for (it = actual.begin(); it != actual.end(); it++) {
-            cout << "(" << it->first << ", " << it->second << "), ";
-        }
-          cout << actualScore << endl;
-         */
 
         if (currentScore > Algorithms::maxScore) {
             Algorithms::maxMoves = currentMoves;
@@ -71,7 +64,7 @@ void Algorithms::bound(Board &board, list<pair<int, int> > &currentMoves, int cu
             Board temp = board;
             temp.removeGroup(*it);
             temp.gravity();
-            if (temp.funcionCota() + currentScore > Algorithms::maxScore) {
+            if (temp.funcionCota() + currentScore + board.score(*it) > Algorithms::maxScore) {
                 bound(temp, currentMoves, currentScore + board.score(*it));
             } else {
                 cantidadPodas++;
@@ -81,7 +74,7 @@ void Algorithms::bound(Board &board, list<pair<int, int> > &currentMoves, int cu
             if (tiempoActual > tiempoAnterior + 3) {
                 tiempoAnterior = tiempoActual;
                 // INTRODUCIR LAS COSAS QUE SE HARAN CADA 3 SEGUNDOS
-                cout << "Cantidad de podas: " << cantidadPodas << endl;
+                cout << "Cantidad de podas:    " << cantidadPodas << endl;
                 cout << "Cantidad de llamadas: " << llamadasRecursivas << endl;
             }
 
@@ -91,3 +84,36 @@ void Algorithms::bound(Board &board, list<pair<int, int> > &currentMoves, int cu
     return;
 }
 
+void Algorithms::greedy(Board board)
+{
+    maxMoves.clear();
+    maxScore = 0;
+
+    list<set<pair<int, int> > > moves = board.getGroupMoves();
+    while (moves.size() > 0)
+    {
+        set<pair<int, int> > *mayorGrupo = NULL;
+        list<set<pair<int, int> > >::iterator it;
+        for (it = moves.begin(); it != moves.end(); it++)
+        {
+            if (mayorGrupo == NULL || (*it).size() > mayorGrupo->size())
+            {
+                mayorGrupo = &(*it);
+            }
+        }
+
+        maxMoves.push_back(*mayorGrupo->begin());
+        maxScore += board.score(*mayorGrupo);
+
+        board.removeGroup(*mayorGrupo);
+        board.gravity();
+        moves = board.getGroupMoves();
+    }
+
+    list<pair<int, int> >::iterator it;
+    for (it = Algorithms::maxMoves.begin(); it != Algorithms::maxMoves.end(); it++) {
+        cout << "(" << it->first << ", " << it->second << "), ";
+    }
+    cout << Algorithms::maxScore << endl << endl << endl;
+    return;
+}

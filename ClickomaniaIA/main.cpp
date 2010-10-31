@@ -36,6 +36,7 @@ int main(int argc, char** argv) {
         list<pair<int, int> > actual;
         int actualScore = 0;
         //Algorithms::backtracking(*board, actual, actualScore);
+        Algorithms::greedy(*board);
         Algorithms::bound(*board, actual, actualScore);
 
     }

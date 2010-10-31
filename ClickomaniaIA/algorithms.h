@@ -34,6 +34,7 @@ private:
 public:
     static void backtracking(Board &board, list<pair<int, int> > &currentMoves, int currentScore);
     static void bound(Board &board, list<pair<int, int> > &currentMoves, int currentScore);
+    static void greedy(Board board);
 
 
 };
