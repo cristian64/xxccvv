@@ -51,11 +51,7 @@ void Algorithms::bound(Board &board, list<pair<int, int> > &currentMoves, int cu
         if (currentScore > Algorithms::maxScore) {
             Algorithms::maxMoves = currentMoves;
             Algorithms::maxScore = currentScore;
-            list<pair<int, int> >::iterator it;
-            for (it = Algorithms::maxMoves.begin(); it != Algorithms::maxMoves.end(); it++) {
-                cout << "(" << it->first << ", " << it->second << "), ";
-            }
-            cout << Algorithms::maxScore << endl;
+            Algorithms::showMax();
         }
     } else {
         list<set<pair<int, int> > >::iterator it;
@@ -110,10 +106,15 @@ void Algorithms::greedy(Board board)
         moves = board.getGroupMoves();
     }
 
+    showMax();
+    return;
+}
+
+void Algorithms::showMax()
+{
     list<pair<int, int> >::iterator it;
     for (it = Algorithms::maxMoves.begin(); it != Algorithms::maxMoves.end(); it++) {
         cout << "(" << it->first << ", " << it->second << "), ";
     }
-    cout << Algorithms::maxScore << endl << endl << endl;
-    return;
+    cout << Algorithms::maxScore << endl;
 }

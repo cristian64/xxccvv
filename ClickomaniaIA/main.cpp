@@ -36,9 +36,10 @@ int main(int argc, char** argv) {
         list<pair<int, int> > actual;
         int actualScore = 0;
         //Algorithms::backtracking(*board, actual, actualScore);
+        cout << "Valor máximo del tablero: " << board->funcionCota() << endl;
         Algorithms::greedy(*board);
         Algorithms::bound(*board, actual, actualScore);
-
+        Algorithms::showMax();
     }
     cout << endl;
     delete board;

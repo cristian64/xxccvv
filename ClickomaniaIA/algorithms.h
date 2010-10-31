@@ -23,7 +23,7 @@ using namespace std;
 //void backtracking(Board board, list<pair<int, int> > &maxMoves, int &maxScore, list<pair<int, int> > actualMoves, int actualScore);
 
 class Algorithms {
-private:
+public:
 
     static list<pair<int, int> > maxMoves;
     static int maxScore;
@@ -36,7 +36,7 @@ public:
     static void bound(Board &board, list<pair<int, int> > &currentMoves, int currentScore);
     static void greedy(Board board);
 
-
+    static void showMax();
 };
 #endif	/* ALGORITHMS_H */
 
