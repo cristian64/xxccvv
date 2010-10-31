@@ -20,13 +20,13 @@ using namespace std;
  * actualMoves: Secuencia actual de movimientos.
  * actualScore: Puntuacion asociada a la secuencia actual de movimientos.
  */
-void backtracking(Board board, list<pair<int, int> > &maxMoves, int &maxScore, list<pair<int, int> > actualMoves, int actualScore);
+//void backtracking(Board board, list<pair<int, int> > &maxMoves, int &maxScore, list<pair<int, int> > actualMoves, int actualScore);
 
 class backtracking {
 private:
 
     static list<pair<int, int> > maxMoves;
-    static int &maxScore;
+    static int maxScore;
 
 public:
     static void run(Board board, list<pair<int, int> > currentMoves, int currentScore);

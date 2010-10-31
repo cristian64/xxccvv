@@ -2,7 +2,10 @@
 
 using namespace std;
 
-static void backtracking::run(Board board, list<pair<int, int> > currentMoves, int currentScore) {
+list<pair<int, int> > backtracking::maxMoves;
+int backtracking::maxScore = 0;
+
+void backtracking::run(Board board, list<pair<int, int> > currentMoves, int currentScore) {
     list<set<pair<int, int> > > moves = board.getGroupMoves();
     if (moves.size() == 0) {//la partida acaba cuando no quedan grupos
         /*
