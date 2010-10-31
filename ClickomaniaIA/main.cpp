@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
         if (strcmp(argv[2], "1") == 0) {
             Algorithms::backtracking(board, actual, actualScore);
         } else {
-            cout << "Valor máximo del tablero: " << board->funcionCota() << endl;
+            cout << "Valor máximo del tablero: " << board.funcionCota() << endl;
             Algorithms::greedy(board);
             Algorithms::bound(board, actual, actualScore);
         }
