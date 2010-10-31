@@ -27,6 +27,9 @@ private:
 
     static list<pair<int, int> > maxMoves;
     static int maxScore;
+    static int tiempoAnterior;
+    static int cantidadPodas;
+    static int llamadasRecursivas;
 
 public:
     static void backtracking(Board &board, list<pair<int, int> > &currentMoves, int currentScore);
