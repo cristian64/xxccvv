@@ -71,6 +71,7 @@ public:
      * Se presupone que los grupos de baldosas del mismo color son adyacentes.
      * \return Devuelve un valor entero con la estimación optimista del tablero.
      */
+    int funcionCotaEntropia() const;
     int funcionCota() const;
 
     //broza para mostrar por pantalla que deberia ser static

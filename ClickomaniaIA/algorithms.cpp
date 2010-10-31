@@ -49,6 +49,8 @@ bool comparador(const set<pair<int, int> > &g1, const set<pair<int, int> > &g2)
 }
 
 void Algorithms::bound(Board &board, list<pair<int, int> > &currentMoves, int currentScore) {
+    //cout << board.funcionCota() << endl;
+    //return;
     llamadasRecursivas++;
     list<set<pair<int, int> > > moves = board.getGroupMoves();
     if (moves.size() == 0) {//la partida acaba cuando no quedan grupos
@@ -61,13 +63,21 @@ void Algorithms::bound(Board &board, list<pair<int, int> > &currentMoves, int cu
     } else {
         moves.sort(comparador);
         list<set<pair<int, int> > >::iterator it;
+        int groupScore;
         for (it = moves.begin(); it != moves.end(); it++) {
             currentMoves.push_back(*it->begin());
             Board temp = board;
             temp.removeGroup(*it);
             temp.gravity();
-            if (temp.funcionCota() + currentScore + board.score(*it) > Algorithms::maxScore) {
-                bound(temp, currentMoves, currentScore + board.score(*it));
+
+            groupScore = board.score(*it);
+            currentScore += groupScore;
+            //bound(temp, currentMoves, currentScore);
+
+
+            if (temp.funcionCota() + currentScore > Algorithms::maxScore) {
+                bound(temp, currentMoves, currentScore);
+
             } else {
                 cantidadPodas++;
             }
@@ -79,7 +89,7 @@ void Algorithms::bound(Board &board, list<pair<int, int> > &currentMoves, int cu
                 cout << "Cantidad de podas:    " << cantidadPodas << endl;
                 cout << "Cantidad de llamadas: " << llamadasRecursivas << endl;
             }
-
+            currentScore -= groupScore;
             currentMoves.pop_back();
         }
     }

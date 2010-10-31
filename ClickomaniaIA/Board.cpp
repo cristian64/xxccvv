@@ -13,8 +13,8 @@
 #include <queue>
 #include <set>
 #include <list>
-#include <map>
 #include <utility>
+#include <cmath>
 
 using namespace std;
 
@@ -57,8 +57,11 @@ Board::Board(const Board& orig) {
 }
 
 Board& Board::operator=(const Board& orig) {
+    cout << "MIERDAAAAAAAAAAAAAAAAAAAA";
     if (this != &orig) {
-        delete [] this->board;
+        if (this->board != NULL) {
+            delete [] this->board;
+        }
         *this->rows = *orig.rows;
         *this->columns = *orig.columns;
         *this->colors = *orig.colors;
@@ -209,20 +212,20 @@ std::set<std::pair<int, int> > Board::getGroupMove(int x, int y) {
     int yDir[] = {1, -1, 0, 0};
     int actualX, actualY;
     if (this->getPosition(x, y) != 0) {
-        while (!open.empty()) {
+        while (!open.empty()) {//n
             actualTile = open.front();
             open.pop_front();
-            closed.insert(actualTile);
-            connected.insert(actualTile);
-            for (int dir = 0; dir < 4; dir++) {
+            closed.insert(actualTile);//log
+            connected.insert(actualTile);//log
+            for (int dir = 0; dir < 4; dir++) {// 4
                 actualX = actualTile.first + xDir[dir];
                 actualY = actualTile.second + yDir[dir];
                 if (actualX >= 0 && actualX < *this->columns) {
                     if (actualY >= 0 && actualY < *this->rows) {
                         if (this->getPosition(actualX, actualY) == this->getPosition(x, y)) {
                             pair<int, int> actual(actualX, actualY);
-                            if (closed.count(actual) == 0) {
-                                open.insert(open.end(), actual);
+                            if (closed.count(actual) == 0) { //log
+                                open.insert(open.end(), actual); //log
                             }
                         }
                     }
@@ -266,25 +269,62 @@ int Board::removeGroup(std::set<std::pair<int, int> > tiles) {
     return tiles.size()*(tiles.size() - 1);
 }
 
-// Realiza una estimación optimista del valor del tablero en el mejor caso.
-
 int Board::funcionCota() const {
     int valorCota = 0;
     int total = *(this->rows) * *(this->columns);
-    map<int, int> cantidad;
     int ocurrencias[*this->colors];
     memset(ocurrencias, 0, sizeof (int) * (*this->colors));
 
+
     // Recorremos el tablero contando únicamente la cantidad de fichas de cada color.
     for (int i = 0; i < total; i++) {
-        ocurrencias[this->board[i] - 1]++;
+        if (this->board[i] > 0) {
+            ocurrencias[this->board[i] - 1]++;
+        }
     }
 
+
     for (int i = 0; i< *this->colors; i++) {
+
 
         valorCota += ocurrencias[i]*(ocurrencias[i] - 1);
     }
     return valorCota;
+}
+
+// Realiza una estimación optimista del valor del tablero en el mejor caso.
+
+int Board::funcionCotaEntropia() const {
+    //int valorCota = 0;
+    int total = *(this->rows) * *(this->columns);
+    int ocurrencias[*this->colors + 1];
+    memset(ocurrencias, 0, sizeof (int) * (*this->colors + 1));
+
+    // Recorremos el tablero contando únicamente la cantidad de fichas de cada color.
+    for (int i = 0; i < total; i++) {
+        ocurrencias[this->board[i]]++;
+    }
+
+    int puntosMaximos = 0;
+    for (int i = 1; i< *this->colors + 1; i++) {
+        puntosMaximos += ocurrencias[i]*(ocurrencias[i] - 1);
+    }
+    double entropia = 0;
+    double prob;
+    for (int i = 0; i< *this->colors; i++) {
+        if (ocurrencias[i] > 0) {
+            prob = ocurrencias[i] / (float) total;
+            entropia += log(prob) * prob;
+        }
+    }
+    entropia = -entropia;
+
+    double entropiaNormalizada = entropia / log(*this->colors + 1);
+    //entropiaNormalizada = entropiaNormalizada;
+    //cout << entropiaNormalizada << endl;
+    //cout << puntosMaximos << endl;
+    //cout << lrint(puntosMaximos * entropiaNormalizada) << endl;
+    return lrint(puntosMaximos * entropiaNormalizada);
 }
 
 void Board::showMoves(std::list<std::set<std::pair<int, int> > > lista) {
