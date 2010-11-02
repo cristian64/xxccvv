@@ -37,14 +37,16 @@ int main(int argc, char** argv) {
         } while (x != -1);
          */
     } else {
-        list<pair<int, int> > actual;
-        int actualScore = 0;
         if (strcmp(argv[2], "1") == 0) {
-            Algorithms::backtracking(board, actual, actualScore);
+            Algorithms::currentMoves.clear();
+            Algorithms::currentScore = 0;
+            Algorithms::backtracking(board);
         } else {
             cout << "Valor máximo del tablero: " << board.funcionCota() << endl;
             Algorithms::greedy(board);
-            Algorithms::bound(board, actual, actualScore);
+            Algorithms::currentMoves.clear();
+            Algorithms::currentScore = 0;
+            Algorithms::bound(board);
         }
         Algorithms::showMax();
     }

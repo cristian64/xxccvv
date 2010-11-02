@@ -26,15 +26,17 @@ class Algorithms {
 public:
 
     static list<pair<int, int> > maxMoves;
+    static list<pair<int, int> > currentMoves;
     static int maxScore;
+    static int currentScore;
     static int tiempoAnterior;
     static int cantidadPodas;
     static int llamadasRecursivas;
     static int sumaAlturaPodas;
 
 public:
-    static void backtracking(Board &board, list<pair<int, int> > &currentMoves, int currentScore);
-    static void bound(Board &board, list<pair<int, int> > &currentMoves, int currentScore);
+    static void backtracking(Board &board);
+    static void bound(Board &board);
     static void greedy(Board board);
 
     static void showMax();

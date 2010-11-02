@@ -3,13 +3,15 @@
 using namespace std;
 
 int Algorithms::maxScore = 0;
+int Algorithms::currentScore = 0;
 list<pair<int, int> > Algorithms::maxMoves;
+list<pair<int, int> > Algorithms::currentMoves;
 int Algorithms::tiempoAnterior = 0;
 int Algorithms::cantidadPodas = 0;
 int Algorithms::llamadasRecursivas = 0;
 int Algorithms::sumaAlturaPodas = 0;
 
-void Algorithms::backtracking(Board &board, list<pair<int, int> > &currentMoves, int currentScore) {
+void Algorithms::backtracking(Board &board) {
 
     list<set<pair<int, int> > > moves = board.getGroupMoves();
     if (moves.size() == 0) {//la partida acaba cuando no quedan grupos
@@ -37,7 +39,10 @@ void Algorithms::backtracking(Board &board, list<pair<int, int> > &currentMoves,
             Board temp = board;
             temp.removeGroup(*it);
             temp.gravity();
-            Algorithms::backtracking(temp, currentMoves, currentScore + board.score(*it));
+            int groupScore = board.score(*it);
+            currentScore += groupScore;
+            Algorithms::backtracking(temp);
+            currentScore -= groupScore;
             currentMoves.pop_back();
         }
     }
@@ -49,7 +54,7 @@ bool comparador(const set<pair<int, int> > &g1, const set<pair<int, int> > &g2)
     return g1.size() < g2.size();
 }
 
-void Algorithms::bound(Board &board, list<pair<int, int> > &currentMoves, int currentScore) {
+void Algorithms::bound(Board &board) {
     //cout << board.funcionCota() << endl;
     //return;
     llamadasRecursivas++;
@@ -77,7 +82,7 @@ void Algorithms::bound(Board &board, list<pair<int, int> > &currentMoves, int cu
 
 
             if (temp.funcionCota() + currentScore > Algorithms::maxScore) {
-                bound(temp, currentMoves, currentScore);
+                bound(temp);
 
             } else {
                 cantidadPodas++;
