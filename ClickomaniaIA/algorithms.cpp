@@ -7,6 +7,7 @@ list<pair<int, int> > Algorithms::maxMoves;
 int Algorithms::tiempoAnterior = 0;
 int Algorithms::cantidadPodas = 0;
 int Algorithms::llamadasRecursivas = 0;
+int Algorithms::sumaAlturaPodas = 0;
 
 void Algorithms::backtracking(Board &board, list<pair<int, int> > &currentMoves, int currentScore) {
 
@@ -80,6 +81,7 @@ void Algorithms::bound(Board &board, list<pair<int, int> > &currentMoves, int cu
 
             } else {
                 cantidadPodas++;
+                sumaAlturaPodas += currentMoves.size();
             }
 
             int tiempoActual = time(NULL);
@@ -88,6 +90,7 @@ void Algorithms::bound(Board &board, list<pair<int, int> > &currentMoves, int cu
                 // INTRODUCIR LAS COSAS QUE SE HARAN CADA 3 SEGUNDOS
                 cout << "Cantidad de podas:    " << cantidadPodas << endl;
                 cout << "Cantidad de llamadas: " << llamadasRecursivas << endl;
+                cout << "Altura media de poda: " << sumaAlturaPodas/(float) cantidadPodas << endl;
             }
             currentScore -= groupScore;
             currentMoves.pop_back();

@@ -30,6 +30,7 @@ public:
     static int tiempoAnterior;
     static int cantidadPodas;
     static int llamadasRecursivas;
+    static int sumaAlturaPodas;
 
 public:
     static void backtracking(Board &board, list<pair<int, int> > &currentMoves, int currentScore);
