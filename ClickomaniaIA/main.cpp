@@ -15,7 +15,7 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-    Board board(argv[1]); // = new Board(argv[1]);
+    Board board(argv[1]);
     if (false) {//para jugar de forma manual
         /*
         int x, y;
@@ -37,21 +37,43 @@ int main(int argc, char** argv) {
         } while (x != -1);
          */
     } else {
+        cout << "Valor máximo del tablero: " << board.funcionCota() << endl;
         if (strcmp(argv[2], "1") == 0) {
             Algorithms::currentMoves.clear();
             Algorithms::currentScore = 0;
             Algorithms::backtracking(board);
-        } else {
-            cout << "Valor máximo del tablero: " << board.funcionCota() << endl;
+        } else if (strcmp(argv[2], "2") == 0) {
             Algorithms::greedy(board);
             Algorithms::currentMoves.clear();
             Algorithms::currentScore = 0;
             Algorithms::bound(board);
         }
+        else
+        {
+            // Inicialización.
+            Algorithms::maxMoves.clear();
+            Algorithms::maxScore = 0;
+            int profundidad = 0;
+            while (board.getGroupMoves().size() > 0)
+            {
+                // Se ejecuta el algoritmo otra vez continuando desde la mejor solución encontrada en la iteración anterior.
+                Algorithms::currentMoves = Algorithms::maxMoves;
+                Algorithms::currentScore = Algorithms::maxScore;
+                Algorithms::backtrackingLimitado(board, profundidad = profundidad + 3);
+
+                // Se aplica la mejor secuencia de movimientos obtenidos al tablero.
+                list<pair<int, int> >::iterator it;
+                for (it = Algorithms::maxMoves.begin(); it != Algorithms::maxMoves.end(); it++) {
+                    board.removeGroup(board.getGroupMove(it->first, it->second));
+                    board.gravity();
+                }
+
+                cout << "----------------------------------------------------------------------------------------------------------" << endl;
+            }
+        }
         Algorithms::showMax();
     }
     cout << endl;
-    //delete board;
 
     return 0;
 }

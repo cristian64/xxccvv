@@ -49,6 +49,36 @@ void Algorithms::backtracking(Board &board) {
     return;
 }
 
+void Algorithms::backtrackingLimitado(Board &board, int profundidad) {
+
+    list<set<pair<int, int> > > moves = board.getGroupMoves();
+    if (moves.size() == 0 || currentMoves.size() >= (unsigned) profundidad) {//la partida acaba cuando no quedan grupos
+        if (currentScore > Algorithms::maxScore) {
+            Algorithms::maxMoves = currentMoves;
+            Algorithms::maxScore = currentScore;
+            list<pair<int, int> >::iterator it;
+            for (it = Algorithms::maxMoves.begin(); it != Algorithms::maxMoves.end(); it++) {
+                cout << "(" << it->first << ", " << it->second << "), ";
+            }
+            cout << Algorithms::maxScore << endl;
+        }
+    } else {
+        list<set<pair<int, int> > >::iterator it;
+        for (it = moves.begin(); it != moves.end(); it++) {
+            currentMoves.push_back(*it->begin());
+            Board temp = board;
+            temp.removeGroup(*it);
+            temp.gravity();
+            int groupScore = board.score(*it);
+            currentScore += groupScore;
+            Algorithms::backtrackingLimitado(temp, profundidad);
+            currentScore -= groupScore;
+            currentMoves.pop_back();
+        }
+    }
+    return;
+}
+
 bool comparador(const set<pair<int, int> > &g1, const set<pair<int, int> > &g2)
 {
     return g1.size() < g2.size();

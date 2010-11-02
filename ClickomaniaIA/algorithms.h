@@ -36,6 +36,7 @@ public:
 
 public:
     static void backtracking(Board &board);
+    static void backtrackingLimitado(Board &board, int profundidad);
     static void bound(Board &board);
     static void greedy(Board board);
 
