@@ -17,11 +17,7 @@ void Algorithms::backtracking(Board &board) {
         if (currentScore > Algorithms::maxScore) {
             Algorithms::maxMoves = currentMoves;
             Algorithms::maxScore = currentScore;
-            list<pair<int, int> >::iterator it;
-            for (it = Algorithms::maxMoves.begin(); it != Algorithms::maxMoves.end(); it++) {
-                cout << "(" << it->first << "," << it->second << "),";
-            }
-            cout << "-> " << Algorithms::maxScore << endl;
+            Algorithms::showMax();
         }
     } else {
         list<set<pair<int, int> > >::iterator it;
