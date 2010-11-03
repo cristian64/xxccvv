@@ -28,13 +28,13 @@ public:
     Board(const Board& orig);
     virtual ~Board();
     Board & operator=(const Board& orig);
-    bool operator==(const Board& o);
+    bool operator==(const Board& o) const;
 
     /*
      * hay que hacer todo a traves de los get y set porque el tablero es un
      * vector, no una matriz, y si no es un coñazo.
      */
-    inline int getPosition(int column, int row);
+    inline int getPosition(int column, int row) const;
     inline int setPosition(int column, int row, int color);
 
 
@@ -50,17 +50,17 @@ public:
     int removeGroup(std::set<std::pair<int, int> > tiles);
 
     //calula el movimiento(grupo) que hay en las coordenadas
-    std::set<std::pair<int, int> > getGroupMove(int x, int y);
+    std::set<std::pair<int, int> > getGroupMove(int x, int y) const;
 
     //calcula todos los movimientos(grupos) posibles dado un tablero
-    std::list<std::set<std::pair<int, int> > > getGroupMoves();
+    std::list<std::set<std::pair<int, int> > > getGroupMoves() const;
 
     /*
      * Devuelve la coordenada que define el movimiento (podria ser una cualquiera)
      * pero el guion pide un formato determinado que, por construccion, corresponde
      * con la primera baldosa del grupo.
      */
-    std::pair<int, int> getMove(const std::set<std::pair<int, int> > groupMove);
+    std::pair<int, int> getMove(const std::set<std::pair<int, int> > groupMove) const;
 
     //calcula la puntuacion asociada a un grupo
     //deberia ser static
@@ -77,7 +77,7 @@ public:
     //broza para mostrar por pantalla que deberia ser static
     static void showMoves(std::list<std::set<std::pair<int, int> > > lista);
     static void showMove(std::set<std::pair<int, int> > move);
-    void show();
+    void show() const;
 
 
 

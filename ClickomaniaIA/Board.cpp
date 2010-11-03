@@ -71,7 +71,7 @@ Board& Board::operator=(const Board& orig) {
     return *this;
 }
 
-bool Board::operator==(const Board& o) {
+bool Board::operator==(const Board& o) const {
     if (*this->rows != *o.rows || *this->columns != *o.columns || *this->colors != *o.colors) {
         return false;
     }
@@ -117,7 +117,7 @@ void Board::setRows(int rows) {
     *this->rows = rows;
 }
 
-inline int Board::getPosition(int column, int row) {
+inline int Board::getPosition(int column, int row) const {
     return this->board[row * (*this->columns) + column];
 }
 
@@ -189,7 +189,7 @@ void Board::gravity() {
      */
 }
 
-list<set<std::pair<int, int> > > Board::getGroupMoves() {
+list<set<std::pair<int, int> > > Board::getGroupMoves() const {
     int elements = *this->rows * * this->columns;
     bool *usedTiles = new bool [elements];
     memset(usedTiles, false, sizeof (false) * elements);
@@ -215,11 +215,11 @@ list<set<std::pair<int, int> > > Board::getGroupMoves() {
 
 }
 
-pair<int, int> Board::getMove(std::set<std::pair<int, int> > groupMove) {
+pair<int, int> Board::getMove(std::set<std::pair<int, int> > groupMove) const {
     return *groupMove.begin();
 }
 
-std::set<std::pair<int, int> > Board::getGroupMove(int x, int y) {
+std::set<std::pair<int, int> > Board::getGroupMove(int x, int y) const {
     std::list<std::pair<int, int> > open;
     std::set<std::pair<int, int> > closed;
     set<std::pair<int, int> > connected;
@@ -364,7 +364,7 @@ void Board::showMove(set<std::pair<int, int> > move) {
     }
 }
 
-void Board::show() {
+void Board::show() const {
     for (int i = 0; i< *this->rows; i++) {
         for (int j = 0; j< *this->columns; j++) {
 
