@@ -11,6 +11,7 @@
 #include "Board.h"
 #include <cstring>
 #include "algorithms.h"
+#include <ctime>
 
 using namespace std;
 
@@ -36,7 +37,7 @@ void aplicarSecuencia(Board & board) {
             puntos = board.removeGroup(broza);
 
             puntosTotales += puntos;
-            cout << endl << "(" << x << "," << y << ")->" << puntosTotales << "\n";
+            cout << endl << "(" << x << "," << y << ")->" << puntos << ", " << puntosTotales << "\n";
             board.show();
             cout << "----------------------------------------";
             if (puntos <= 0) {
@@ -78,27 +79,47 @@ void backtrackingProgresivo(Board &board) {
     Algorithms::maxScore = 0;
     int profundidad = 0;
     Board board2;
+    list<pair<int, int> > maxMoves;
+    int maxScore = 0;
     while (board.getGroupMoves().size() > 0) {
         // Se ejecuta el algoritmo otra vez continuando desde la mejor solución encontrada en la iteración anterior.
         Algorithms::currentMoves = Algorithms::maxMoves;
         Algorithms::currentScore = Algorithms::maxScore;
         profundidad += 3;
-        Algorithms::backtrackingLimitado(board, profundidad, board2);
+        Algorithms::backtrackingLimitado(board, 4, board2);
+
+        maxMoves.insert(maxMoves.end(), Algorithms::maxMoves.begin(), Algorithms::maxMoves.end());
+        maxScore += Algorithms::maxScore;
+
+        Algorithms::currentMoves.clear();
+        Algorithms::currentScore = 0;
+        Algorithms::maxMoves.clear();
+        Algorithms::maxScore = 0;
+
         board = board2;
         // Se aplica la mejor secuencia de movimientos obtenidos al tablero.
+        /*
         list<pair<int, int> >::iterator it;
         for (it = Algorithms::maxMoves.begin(); it != Algorithms::maxMoves.end(); it++) {
             board.removeGroup(board.getGroupMove(it->first, it->second));
             cout << "(" << it->first << "," << it->second << "),";
         }
         cout << "-> " << Algorithms::maxScore << endl;
+         * */
         board2.show();
-        board.show();
+        //board.show();
         cout << "----------------------------------------------------------------------------------------------------------" << endl;
     }
+    list<pair<int, int> >::iterator it;
+    for (it = maxMoves.begin(); it != maxMoves.end(); it++) {
+        cout << "(" << it->first << "," << it->second << "),";
+    }
+    cout << "-> " << maxScore << endl;
 }
 
 int main(int argc, char** argv) {
+    time_t t1, t2;
+    time(&t1);
     Board board(argv[1]);
     if (argc < 3) {
         aplicarSecuencia(board);
@@ -134,5 +155,7 @@ int main(int argc, char** argv) {
         }
     }
     cout << endl;
+    time(&t2);
+    cout << "Tiempo: " << difftime(t2, t1) << endl;
     return 0;
 }

@@ -62,20 +62,20 @@ dist/Release/GNU-Linux-x86/clickomaniaia: ${OBJECTFILES}
 	${MKDIR} -p dist/Release/GNU-Linux-x86
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/clickomaniaia ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
-${OBJECTDIR}/main.o: main.cpp 
+${OBJECTDIR}/main.o: nbproject/Makefile-${CND_CONF}.mk main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -O3 -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
-${OBJECTDIR}/algorithms.o: algorithms.cpp 
+${OBJECTDIR}/algorithms.o: nbproject/Makefile-${CND_CONF}.mk algorithms.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/algorithms.o algorithms.cpp
+	$(COMPILE.cc) -O3 -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/algorithms.o algorithms.cpp
 
-${OBJECTDIR}/Board.o: Board.cpp 
+${OBJECTDIR}/Board.o: nbproject/Makefile-${CND_CONF}.mk Board.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Board.o Board.cpp
+	$(COMPILE.cc) -O3 -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/Board.o Board.cpp
 
 # Subprojects
 .build-subprojects:
