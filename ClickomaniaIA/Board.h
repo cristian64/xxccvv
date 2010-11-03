@@ -45,7 +45,7 @@ public:
 
     /*
      * elimina (pone a 0) las baldosas que pertenecen a un grupo
-     * NO reajusta el tablero segun la gravedad
+     * Tambien reajusta el tablero segun la gravedad
      */
     int removeGroup(std::set<std::pair<int, int> > tiles);
 

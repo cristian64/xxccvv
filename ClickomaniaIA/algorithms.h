@@ -13,6 +13,7 @@
 #include "Board.h"
 
 using namespace std;
+
 /*
  * board: Tablero de juego.
  * maxMoves: Secuencia de movimientos que ha llevado a la puntuacion maxima alcanzada.
@@ -20,7 +21,7 @@ using namespace std;
  * actualMoves: Secuencia actual de movimientos.
  * actualScore: Puntuacion asociada a la secuencia actual de movimientos.
  */
-//void backtracking(Board board, list<pair<int, int> > &maxMoves, int &maxScore, list<pair<int, int> > actualMoves, int actualScore);
+
 
 class Algorithms {
 public:
@@ -36,7 +37,7 @@ public:
 
 public:
     static void backtracking(Board &board);
-    static void backtrackingLimitado(Board &board, int profundidad);
+    static void backtrackingLimitado(Board &board, int profundidad, Board &board2);
     static void bound(Board &board);
     static void greedy(Board board);
 

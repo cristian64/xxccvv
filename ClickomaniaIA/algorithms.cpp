@@ -12,25 +12,16 @@ int Algorithms::llamadasRecursivas = 0;
 int Algorithms::sumaAlturaPodas = 0;
 
 void Algorithms::backtracking(Board &board) {
-
     list<set<pair<int, int> > > moves = board.getGroupMoves();
     if (moves.size() == 0) {//la partida acaba cuando no quedan grupos
-        /*
-        list<pair<int, int> >::iterator it;
-        for (it = actual.begin(); it != actual.end(); it++) {
-            cout << "(" << it->first << ", " << it->second << "), ";
-        }
-          cout << actualScore << endl;
-         */
-
         if (currentScore > Algorithms::maxScore) {
             Algorithms::maxMoves = currentMoves;
             Algorithms::maxScore = currentScore;
             list<pair<int, int> >::iterator it;
             for (it = Algorithms::maxMoves.begin(); it != Algorithms::maxMoves.end(); it++) {
-                cout << "(" << it->first << ", " << it->second << "), ";
+                cout << "(" << it->first << "," << it->second << "),";
             }
-            cout << Algorithms::maxScore << endl;
+            cout << "-> " << Algorithms::maxScore << endl;
         }
     } else {
         list<set<pair<int, int> > >::iterator it;
@@ -38,7 +29,7 @@ void Algorithms::backtracking(Board &board) {
             currentMoves.push_back(*it->begin());
             Board temp = board;
             temp.removeGroup(*it);
-            temp.gravity();
+            //temp.gravity();
             int groupScore = board.score(*it);
             currentScore += groupScore;
             Algorithms::backtracking(temp);
@@ -49,18 +40,19 @@ void Algorithms::backtracking(Board &board) {
     return;
 }
 
-void Algorithms::backtrackingLimitado(Board &board, int profundidad) {
-
+void Algorithms::backtrackingLimitado(Board &board, int profundidad, Board &board2) {
     list<set<pair<int, int> > > moves = board.getGroupMoves();
     if (moves.size() == 0 || currentMoves.size() >= (unsigned) profundidad) {//la partida acaba cuando no quedan grupos
         if (currentScore > Algorithms::maxScore) {
             Algorithms::maxMoves = currentMoves;
             Algorithms::maxScore = currentScore;
             list<pair<int, int> >::iterator it;
+            board2 = board;
+
             for (it = Algorithms::maxMoves.begin(); it != Algorithms::maxMoves.end(); it++) {
-                cout << "(" << it->first << ", " << it->second << "), ";
+                cout << "(" << it->first << "," << it->second << "),";
             }
-            cout << Algorithms::maxScore << endl;
+            cout << "-> " << Algorithms::maxScore << endl;
         }
     } else {
         list<set<pair<int, int> > >::iterator it;
@@ -71,7 +63,7 @@ void Algorithms::backtrackingLimitado(Board &board, int profundidad) {
             temp.gravity();
             int groupScore = board.score(*it);
             currentScore += groupScore;
-            Algorithms::backtrackingLimitado(temp, profundidad);
+            Algorithms::backtrackingLimitado(temp, profundidad, board2);
             currentScore -= groupScore;
             currentMoves.pop_back();
         }
@@ -79,8 +71,7 @@ void Algorithms::backtrackingLimitado(Board &board, int profundidad) {
     return;
 }
 
-bool comparador(const set<pair<int, int> > &g1, const set<pair<int, int> > &g2)
-{
+bool comparador(const set<pair<int, int> > &g1, const set<pair<int, int> > &g2) {
     return g1.size() < g2.size();
 }
 
@@ -104,8 +95,7 @@ void Algorithms::bound(Board &board) {
             currentMoves.push_back(*it->begin());
             Board temp = board;
             temp.removeGroup(*it);
-            temp.gravity();
-
+            //temp.gravity();
             groupScore = board.score(*it);
             currentScore += groupScore;
             //bound(temp, currentMoves, currentScore);
@@ -125,7 +115,7 @@ void Algorithms::bound(Board &board) {
                 // INTRODUCIR LAS COSAS QUE SE HARAN CADA 3 SEGUNDOS
                 cout << "Cantidad de podas:    " << cantidadPodas << endl;
                 cout << "Cantidad de llamadas: " << llamadasRecursivas << endl;
-                cout << "Altura media de poda: " << sumaAlturaPodas/(float) cantidadPodas << endl;
+                cout << "Altura media de poda: " << sumaAlturaPodas / (float) cantidadPodas << endl;
             }
             currentScore -= groupScore;
             currentMoves.pop_back();
@@ -134,20 +124,16 @@ void Algorithms::bound(Board &board) {
     return;
 }
 
-void Algorithms::greedy(Board board)
-{
+void Algorithms::greedy(Board board) {
     maxMoves.clear();
     maxScore = 0;
 
     list<set<pair<int, int> > > moves = board.getGroupMoves();
-    while (moves.size() > 0)
-    {
+    while (moves.size() > 0) {
         set<pair<int, int> > *mayorGrupo = NULL;
         list<set<pair<int, int> > >::iterator it;
-        for (it = moves.begin(); it != moves.end(); it++)
-        {
-            if (mayorGrupo == NULL || (*it).size() > mayorGrupo->size())
-            {
+        for (it = moves.begin(); it != moves.end(); it++) {
+            if (mayorGrupo == NULL || (*it).size() > mayorGrupo->size()) {
                 mayorGrupo = &(*it);
             }
         }
@@ -164,11 +150,10 @@ void Algorithms::greedy(Board board)
     return;
 }
 
-void Algorithms::showMax()
-{
+void Algorithms::showMax() {
     list<pair<int, int> >::iterator it;
     for (it = Algorithms::maxMoves.begin(); it != Algorithms::maxMoves.end(); it++) {
-        cout << "(" << it->first << ", " << it->second << "), ";
+        cout << "(" << it->first << "," << it->second << "),";
     }
-    cout << Algorithms::maxScore << endl;
+    cout << "-> " << Algorithms::maxScore << endl;
 }

@@ -14,67 +14,125 @@
 
 using namespace std;
 
-int main(int argc, char** argv) {
-    Board board(argv[1]);
-    if (false) {//para jugar de forma manual
-        /*
-        int x, y;
-        int puntos = 0;
-        do {
-            
-            list<std::set<std::pair<int, int> > > lista = board->getGroupMoves();
-            board->showMoves(lista);
-            cin >> x >> y;
-            //std::set<std::pair<int, int> > broza = board->getGroupMove(atoi(argv[1]), atoi(argv[2]));
-            std::set<std::pair<int, int> > broza = board->getGroupMove(x, y);
-            cout << board->score(broza) << endl;
-            puntos += board->removeGroup(broza);
-            board->gravity();
-            board->show();
-            cout << endl;
-            cout << puntos << endl;
+void aplicarSecuencia(Board & board) {
+    char caracter1, caracter2, caracter3, caracter4;
+    int puntos = 0;
+    int puntosTotales = 0;
+    int x, y;
+    board.show();
+    cout << "----------------------------------------";
+    do {
+        cin >> caracter1;
+        if (caracter1 != '-') {
+            cin >> x;
+            cin >> caracter2;
+            cin >> y;
+            cin >> caracter3;
+            cin >> caracter4;
+            //cout << caracter1 << x << caracter2 << y << caracter3 << caracter4;
 
-        } while (x != -1);
-         */
-    } else {
-        cout << "Valor máximo del tablero: " << board.funcionCota() << endl;
-        if (strcmp(argv[2], "1") == 0) {
-            Algorithms::currentMoves.clear();
-            Algorithms::currentScore = 0;
-            Algorithms::backtracking(board);
-        } else if (strcmp(argv[2], "2") == 0) {
-            Algorithms::greedy(board);
-            Algorithms::currentMoves.clear();
-            Algorithms::currentScore = 0;
-            Algorithms::bound(board);
-        }
-        else
-        {
-            // Inicialización.
-            Algorithms::maxMoves.clear();
-            Algorithms::maxScore = 0;
-            int profundidad = 0;
-            while (board.getGroupMoves().size() > 0)
-            {
-                // Se ejecuta el algoritmo otra vez continuando desde la mejor solución encontrada en la iteración anterior.
-                Algorithms::currentMoves = Algorithms::maxMoves;
-                Algorithms::currentScore = Algorithms::maxScore;
-                Algorithms::backtrackingLimitado(board, profundidad = profundidad + 3);
+            std::set<std::pair<int, int> > broza = board.getGroupMove(x, y);
+            //cout << board.score(broza) << endl;
+            puntos = board.removeGroup(broza);
 
-                // Se aplica la mejor secuencia de movimientos obtenidos al tablero.
-                list<pair<int, int> >::iterator it;
-                for (it = Algorithms::maxMoves.begin(); it != Algorithms::maxMoves.end(); it++) {
-                    board.removeGroup(board.getGroupMove(it->first, it->second));
-                    board.gravity();
-                }
-
-                cout << "----------------------------------------------------------------------------------------------------------" << endl;
+            puntosTotales += puntos;
+            cout << endl << "(" << x << "," << y << ")->" << puntosTotales << "\n";
+            board.show();
+            cout << "----------------------------------------";
+            if (puntos <= 0) {
+                cout << "\nERRORRRRRRRRRRRR\n";
+                return;
             }
         }
-        Algorithms::showMax();
-    }
+    } while (caracter1 != '-');
     cout << endl;
-
-    return 0;
 }
 
+void manual(Board &board) {
+    int x = 0, y = 0;
+    int puntos = 0;
+    do {
+        list<std::set<std::pair<int, int> > > lista = board.getGroupMoves();
+        list<set<pair<int, int> > >::iterator it;
+
+        for (it = lista.begin(); it != lista.end(); it++) {
+            cout << "(" << it->begin()->first << ", " << it->begin()->second << ")\n";
+        }
+
+        //board.showMoves(lista);
+        cin >> x >> y;
+        //std::set<std::pair<int, int> > broza = board->getGroupMove(atoi(argv[1]), atoi(argv[2]));
+        std::set<std::pair<int, int> > broza = board.getGroupMove(x, y);
+        cout << board.score(broza) << endl;
+        puntos += board.removeGroup(broza);
+        board.show();
+        cout << endl;
+        cout << puntos << endl;
+    } while (x != -1);
+    return;
+}
+
+void backtrackingProgresivo(Board &board) {
+    // Inicialización.
+    Algorithms::maxMoves.clear();
+    Algorithms::maxScore = 0;
+    int profundidad = 0;
+    Board board2;
+    while (board.getGroupMoves().size() > 0) {
+        // Se ejecuta el algoritmo otra vez continuando desde la mejor solución encontrada en la iteración anterior.
+        Algorithms::currentMoves = Algorithms::maxMoves;
+        Algorithms::currentScore = Algorithms::maxScore;
+        profundidad += 3;
+        Algorithms::backtrackingLimitado(board, profundidad, board2);
+        board = board2;
+        // Se aplica la mejor secuencia de movimientos obtenidos al tablero.
+        list<pair<int, int> >::iterator it;
+        for (it = Algorithms::maxMoves.begin(); it != Algorithms::maxMoves.end(); it++) {
+            board.removeGroup(board.getGroupMove(it->first, it->second));
+            cout << "(" << it->first << "," << it->second << "),";
+        }
+        cout << "-> " << Algorithms::maxScore << endl;
+        board2.show();
+        board.show();
+        cout << "----------------------------------------------------------------------------------------------------------" << endl;
+    }
+}
+
+int main(int argc, char** argv) {
+    Board board(argv[1]);
+    if (argc < 3) {
+        aplicarSecuencia(board);
+        //parchazo para mirar los movimientos posibles al pasarle un tablero intermedio
+        //board.show();
+        //board.getGroupMoves();
+        //board.showMoves(board.getGroupMoves());
+    } else {
+        switch (atoi(argv[2])) {
+            case 0:
+                manual(board);
+                break;
+            case 1:
+                Algorithms::currentMoves.clear();
+                Algorithms::currentScore = 0;
+                Algorithms::backtracking(board);
+                Algorithms::showMax();
+                break;
+            case 2:
+                Algorithms::greedy(board);
+                Algorithms::currentMoves.clear();
+                Algorithms::currentScore = 0;
+                Algorithms::bound(board);
+                Algorithms::showMax();
+                break;
+            case 3:
+                backtrackingProgresivo(board);
+                break;
+            case 4:
+                break;
+            default:
+                break;
+        }
+    }
+    cout << endl;
+    return 0;
+}

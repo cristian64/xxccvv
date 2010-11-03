@@ -57,7 +57,6 @@ Board::Board(const Board& orig) {
 }
 
 Board& Board::operator=(const Board& orig) {
-    cout << "MIERDAAAAAAAAAAAAAAAAAAAA";
     if (this != &orig) {
         if (this->board != NULL) {
             delete [] this->board;
@@ -215,8 +214,8 @@ std::set<std::pair<int, int> > Board::getGroupMove(int x, int y) {
         while (!open.empty()) {//n
             actualTile = open.front();
             open.pop_front();
-            closed.insert(actualTile);//log
-            connected.insert(actualTile);//log
+            closed.insert(actualTile); //log
+            connected.insert(actualTile); //log
             for (int dir = 0; dir < 4; dir++) {// 4
                 actualX = actualTile.first + xDir[dir];
                 actualY = actualTile.second + yDir[dir];
@@ -266,6 +265,7 @@ int Board::removeGroup(std::set<std::pair<int, int> > tiles) {
     for (it = tiles.begin(); it != tiles.end(); it++) {
         this->setPosition(it->first, it->second, 0);
     }
+    this->gravity();
     return tiles.size()*(tiles.size() - 1);
 }
 
@@ -296,7 +296,7 @@ int Board::funcionCota() const {
 
 int Board::funcionCotaEntropia() const {
     //int valorCota = 0;
-    int total = *(this->rows) * *(this->columns);
+    int total = *(this->rows) * (*this->columns);
     int ocurrencias[*this->colors + 1];
     memset(ocurrencias, 0, sizeof (int) * (*this->colors + 1));
 
@@ -331,7 +331,6 @@ void Board::showMoves(std::list<std::set<std::pair<int, int> > > lista) {
     list<set<std::pair<int, int> > >::iterator it1;
     for (it1 = lista.begin(); it1 != lista.end(); it1++) {
         if (it1->size() > 0) {
-
             cout << "MOV: ";
             Board::showMove(*it1);
             cout << "Puntuacion: " << it1->size() * (it1->size() - 1) << endl;
