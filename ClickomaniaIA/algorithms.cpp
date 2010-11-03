@@ -104,15 +104,16 @@ void Algorithms::bound(Board &board) {
                 cantidadPodas++;
                 sumaAlturaPodas += currentMoves.size();
             }
-
+/*
             int tiempoActual = time(NULL);
             if (tiempoActual > tiempoAnterior + 3) {
                 tiempoAnterior = tiempoActual;
                 // INTRODUCIR LAS COSAS QUE SE HARAN CADA 3 SEGUNDOS
-                cout << "Cantidad de podas:    " << cantidadPodas << endl;
-                cout << "Cantidad de llamadas: " << llamadasRecursivas << endl;
-                cout << "Altura media de poda: " << sumaAlturaPodas / (float) cantidadPodas << endl;
+                //cout << "Cantidad de podas:    " << cantidadPodas << endl;
+                //cout << "Cantidad de llamadas: " << llamadasRecursivas << endl;
+                //cout << "Altura media de poda: " << sumaAlturaPodas / (float) cantidadPodas << endl;
             }
+ */
             currentScore -= groupScore;
             currentMoves.pop_back();
         }
