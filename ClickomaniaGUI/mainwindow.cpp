@@ -164,7 +164,7 @@ void MainWindow::on_pushButton_2_clicked()
 	QString secuencia = ui->lineEdit->text();
 
 	// Se comprueba que hay al menos un "(x, y)" antes de leer.
-	if (secuencia.contains(QRegExp("^(\\s*\\D\\s*\\d*\\s*\\D\\s*\\d*\\s*\\D\\s*)*")))
+	if (secuencia.contains(QRegExp("^(\\s*\\D\\s*\\d+\\s*\\D\\s*\\d+\\s*\\D\\s*)")))
 	{
 		// Se extrae el primer movimiento de la secuencia y se aplica.
 		stringstream flujo(secuencia.toStdString());
