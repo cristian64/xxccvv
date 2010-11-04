@@ -34,16 +34,19 @@ void MainWindow::on_tableWidget_cellClicked(int row, int column)
 {
 	if (board != NULL)
 	{
-		// Se obtiene el grupo de la casilla indicada y se elimina.
-		set<pair<int,int> > grupo = board->getGroupMove(column, row);
-		board->removeGroup(grupo);
-		actualizarTabla();
+		if (row < board->getRows() && column < board->getColumns())
+		{
+			// Se obtiene el grupo de la casilla indicada y se elimina.
+			set<pair<int,int> > grupo = board->getGroupMove(column, row);
+			board->removeGroup(grupo);
+			actualizarTabla();
 
-		// Se actualiza la puntuación.
-		int ultimaPuntuacion = Board::score(grupo);
-		int puntuacion = ui->label_4->text().toInt() + ultimaPuntuacion;
-		ui->label_4->setText(QString::number(puntuacion));
-		ui->label_5->setText(QString::number(ultimaPuntuacion));
+			// Se actualiza la puntuación.
+			int ultimaPuntuacion = Board::score(grupo);
+			int puntuacion = ui->label_4->text().toInt() + ultimaPuntuacion;
+			ui->label_4->setText(QString::number(puntuacion));
+			ui->label_5->setText(QString::number(ultimaPuntuacion));
+		}
 	}
 }
 
@@ -155,11 +158,14 @@ void MainWindow::on_tableWidget_cellEntered(int row, int column)
 	if (board != NULL)
 	{
 		actualizarTabla();
-		std::set<std::pair<int, int> > move = board->getGroupMove(column, row);
-		std::set<std::pair<int, int> >::iterator it;
-		for (it = move.begin(); it != move.end(); it++)
+		if (row < board->getRows() && column < board->getColumns())
 		{
-			ui->tableWidget->item(it->second, it->first)->setBackgroundColor(QColor(0, 0, 0));
+			std::set<std::pair<int, int> > move = board->getGroupMove(column, row);
+			std::set<std::pair<int, int> >::iterator it;
+			for (it = move.begin(); it != move.end(); it++)
+			{
+				ui->tableWidget->item(it->second, it->first)->setBackgroundColor(QColor(0, 0, 0));
+			}
 		}
 	}
 }
