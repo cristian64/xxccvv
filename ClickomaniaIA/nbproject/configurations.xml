@@ -5,6 +5,7 @@
                    displayName="Header Files"
                    projectFiles="true"
                    kind="SOURCE_LOGICAL_FOLDER">
+      <itemPath>AStar.h</itemPath>
       <itemPath>Board.h</itemPath>
       <itemPath>algorithms.h</itemPath>
     </logicalFolder>
@@ -17,6 +18,8 @@
                    displayName="Source Files"
                    projectFiles="true"
                    kind="SOURCE_LOGICAL_FOLDER">
+      <itemPath>AStar.cpp</itemPath>
+      <itemPath>AStarNode.cpp</itemPath>
       <itemPath>Board.cpp</itemPath>
       <itemPath>algorithms.cpp</itemPath>
       <itemPath>main.cpp</itemPath>

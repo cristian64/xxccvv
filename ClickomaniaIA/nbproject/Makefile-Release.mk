@@ -33,8 +33,10 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/AStarNode.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/algorithms.o \
+	${OBJECTDIR}/AStar.o \
 	${OBJECTDIR}/Board.o
 
 
@@ -62,6 +64,11 @@ dist/Release/GNU-Linux-x86/clickomaniaia: ${OBJECTFILES}
 	${MKDIR} -p dist/Release/GNU-Linux-x86
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/clickomaniaia ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
+${OBJECTDIR}/AStarNode.o: nbproject/Makefile-${CND_CONF}.mk AStarNode.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O3 -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/AStarNode.o AStarNode.cpp
+
 ${OBJECTDIR}/main.o: nbproject/Makefile-${CND_CONF}.mk main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -71,6 +78,11 @@ ${OBJECTDIR}/algorithms.o: nbproject/Makefile-${CND_CONF}.mk algorithms.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O3 -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/algorithms.o algorithms.cpp
+
+${OBJECTDIR}/AStar.o: nbproject/Makefile-${CND_CONF}.mk AStar.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O3 -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/AStar.o AStar.cpp
 
 ${OBJECTDIR}/Board.o: nbproject/Makefile-${CND_CONF}.mk Board.cpp 
 	${MKDIR} -p ${OBJECTDIR}
