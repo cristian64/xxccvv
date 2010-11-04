@@ -118,11 +118,11 @@ void Board::setRows(int rows) {
     *this->rows = rows;
 }
 
-inline int Board::getPosition(int column, int row) const {
+int Board::getPosition(int column, int row) const {
     return this->board[row * (*this->columns) + column];
 }
 
-inline int Board::setPosition(int column, int row, int color) {
+int Board::setPosition(int column, int row, int color) {
     return this->board[row * (*this->columns) + column] = color;
 }
 
