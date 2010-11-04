@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QDir>
 #include <QFileInfoList>
+#include <sstream>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -15,11 +16,18 @@ MainWindow::MainWindow(QWidget *parent) :
 	{
 		ui->tableWidget->setColumnWidth(i, 30);
 		ui->tableWidget->setRowHeight(i, 30);
+		ui->tableWidget->verticalHeaderItem(i)->setSizeHint(QSize(28, 30));
+		ui->tableWidget->horizontalHeaderItem(i)->setSizeHint(QSize(30, 28));
+		ui->tableWidget->verticalHeaderItem(i)->setTextAlignment(Qt::AlignCenter);
 		for (int j = 0; j < 20; j++)
 		{
 			ui->tableWidget->setItem(i, j, new QTableWidgetItem());
 		}
 	}
+
+	// Se bloquea la redimensión de las cabeceras.
+	ui->tableWidget->verticalHeader()->setResizeMode(QHeaderView::Fixed);
+	ui->tableWidget->horizontalHeader()->setResizeMode(QHeaderView::Fixed);
 
 	// Cargamos los tableros.
 	on_pushButton_clicked();
@@ -27,9 +35,33 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+	// Elimina los items creados.
+	for (int i = 0; i < 20; i++)
+	{
+		for (int j = 0; j < 20; j++)
+		{
+			QTableWidgetItem* item = ui->tableWidget->item(i, j);
+			ui->tableWidget->removeCellWidget(i, j);
+			delete item;
+		}
+	}
+
+	// Eliminamos la lista de ficheros.
+	while (ui->listWidget->item(0) != NULL)
+	{
+		QListWidgetItem* item = ui->listWidget->item(0);
+		ui->listWidget->removeItemWidget(item);
+		delete item;
+	}
+
+	// Y el tablero si llegó a crearse.
+	if (board != NULL)
+		delete board;
+
     delete ui;
 }
 
+// Ejecuta una jugada en el tablero.
 void MainWindow::on_tableWidget_cellClicked(int row, int column)
 {
 	if (board != NULL)
@@ -129,13 +161,32 @@ void MainWindow::on_pushButton_clicked()
 // Aplica el siguiente movimiento de la secuencia.
 void MainWindow::on_pushButton_2_clicked()
 {
-	//string secuencia = ui->lineEdit->text().toStdString();
-	//stringstream flujo(secuencia);
-	//stringstream secuencia = ui->lineEdit->text().toStdString();
-	//QTextStream flujo = QTextStream();
-	// = ui->lineEdit->text().toStdString();
-	/*cout << otra.toStdString() << endl;
-	ui->lineEdit->setText(secuencia);*/
+	QString secuencia = ui->lineEdit->text();
+
+	// Se comprueba que hay al menos un "(x, y)" antes de leer.
+	if (secuencia.contains(QRegExp("^(\\s*\\D\\s*\\d*\\s*\\D\\s*\\d*\\s*\\D\\s*)*")))
+	{
+		// Se extrae el primer movimiento de la secuencia y se aplica.
+		stringstream flujo(secuencia.toStdString());
+		char caracter;
+		int x, y;
+		flujo >> caracter;
+		flujo >> x;
+		flujo >> caracter;
+		flujo >> y;
+		flujo >> caracter;
+		on_tableWidget_cellClicked(y, x);
+
+		// El resto del flujo se introduce en el campo de texto otra vez.
+		string resto = "";
+		flujo.read(&caracter, 1);
+		while (!flujo.eof())
+		{
+			resto = resto + caracter;
+			flujo.read(&caracter, 1);
+		}
+		ui->lineEdit->setText(QString::fromStdString(resto));
+	}
 }
 
 // Carga el tablero seleccionado.
