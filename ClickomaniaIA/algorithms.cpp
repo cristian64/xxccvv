@@ -11,6 +11,9 @@ int Algorithms::cantidadPodas = 0;
 int Algorithms::llamadasRecursivas = 0;
 int Algorithms::sumaAlturaPodas = 0;
 
+//set<Board, boardCompare>Algorithms::generatedBoards;
+static set<pair<Board, pair<int, list<pair<int, int> > > > >  generatedBoards;
+
 void Algorithms::backtracking(Board &board) {
     list<set<pair<int, int> > > moves = board.getGroupMoves();
     if (moves.size() == 0) {//la partida acaba cuando no quedan grupos
@@ -86,34 +89,31 @@ void Algorithms::bound(Board &board) {
     } else {
         moves.sort(comparador);
         list<set<pair<int, int> > >::iterator it;
-        int groupScore;
         for (it = moves.begin(); it != moves.end(); it++) {
             currentMoves.push_back(*it->begin());
             Board temp = board;
             temp.removeGroup(*it);
             //temp.gravity();
-            groupScore = board.score(*it);
+            int groupScore = board.score(*it);
             currentScore += groupScore;
             //bound(temp, currentMoves, currentScore);
 
-
             if (temp.funcionCota() + currentScore > Algorithms::maxScore) {
                 bound(temp);
-
             } else {
                 cantidadPodas++;
                 sumaAlturaPodas += currentMoves.size();
             }
-/*
-            int tiempoActual = time(NULL);
-            if (tiempoActual > tiempoAnterior + 3) {
-                tiempoAnterior = tiempoActual;
-                // INTRODUCIR LAS COSAS QUE SE HARAN CADA 3 SEGUNDOS
-                //cout << "Cantidad de podas:    " << cantidadPodas << endl;
-                //cout << "Cantidad de llamadas: " << llamadasRecursivas << endl;
-                //cout << "Altura media de poda: " << sumaAlturaPodas / (float) cantidadPodas << endl;
-            }
- */
+            /*
+                        int tiempoActual = time(NULL);
+                        if (tiempoActual > tiempoAnterior + 3) {
+                            tiempoAnterior = tiempoActual;
+                            // INTRODUCIR LAS COSAS QUE SE HARAN CADA 3 SEGUNDOS
+                            //cout << "Cantidad de podas:    " << cantidadPodas << endl;
+                            //cout << "Cantidad de llamadas: " << llamadasRecursivas << endl;
+                            //cout << "Altura media de poda: " << sumaAlturaPodas / (float) cantidadPodas << endl;
+                        }
+             */
             currentScore -= groupScore;
             currentMoves.pop_back();
         }

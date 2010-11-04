@@ -195,7 +195,7 @@ list<set<std::pair<int, int> > > Board::getGroupMoves() const {
     bool *usedTiles = new bool [elements]; //marca que baldosas ya pertenecen a algun grupo
     memset(usedTiles, false, sizeof (false) * elements);
     list<set<std::pair<int, int> > > moves;
-    for (int i = 0; i<*this->rows; i++) {//para cada baldosas
+    for (int i = 0; i<*this->rows; i++) {//para cada baldosa
         for (int j = 0; j<*this->columns; j++) {
             if (!usedTiles[i * (*this->columns) + j] && this->getPosition(j, i) != 0) {//si no esta en uso y no esta vacia
                 set<pair<int, int> > actualGroup;

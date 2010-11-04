@@ -130,6 +130,7 @@ int main(int argc, char** argv) {
     } else {
         switch (atoi(argv[2])) {
             case 0:
+                cout << board.getGroupMove(10, 1).size() << endl;
                 manual(board);
                 break;
             case 1:

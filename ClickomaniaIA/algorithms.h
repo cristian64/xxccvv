@@ -22,12 +22,21 @@ using namespace std;
  * actualScore: Puntuacion asociada a la secuencia actual de movimientos.
  */
 
+struct boardCompare {
+
+    bool operator() (const Board& lhs, const Board & rhs) const {
+        return lhs.funcionCota() < rhs.funcionCota();
+    }
+};
 
 class Algorithms {
 public:
 
+
     static list<pair<int, int> > maxMoves;
     static list<pair<int, int> > currentMoves;
+    //static set<pair<Board, pair<list<pair<int, int> > > > >,  boardCompare> generatedBoards;
+    static set<pair<Board, pair<int, list<pair<int, int> > > > >  generatedBoards;
     static int maxScore;
     static int currentScore;
     static int tiempoAnterior;
