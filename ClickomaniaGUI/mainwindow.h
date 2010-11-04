@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QListWidgetItem>
 #include <iostream>
 #include "Board.h"
 
@@ -18,7 +19,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-	static Board board;
+	Board *board;
 
 private:
     Ui::MainWindow *ui;
@@ -26,6 +27,10 @@ private:
 	void actualizarTabla();
 
 private slots:
+	void on_tableWidget_cellEntered(int row, int column);
+ void on_listWidget_itemDoubleClicked(QListWidgetItem* item);
+	void on_pushButton_2_clicked();
+	void on_pushButton_clicked();
 	void on_tableWidget_cellClicked(int row, int column);
 };
 

@@ -34,8 +34,8 @@ public:
      * hay que hacer todo a traves de los get y set porque el tablero es un
      * vector, no una matriz, y si no es un coñazo.
      */
-    inline int getPosition(int column, int row) const;
-    inline int setPosition(int column, int row, int color);
+	int getPosition(int column, int row) const;
+	int setPosition(int column, int row, int color);
 
 
     /*
