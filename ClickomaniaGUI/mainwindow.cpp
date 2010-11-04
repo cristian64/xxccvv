@@ -116,7 +116,7 @@ void MainWindow::on_pushButton_clicked()
 	}
 
 	// Cargamos nuevamente la lista.
-	QDir dir("./");
+	QDir dir(".");
 	QFileInfoList files = dir.entryInfoList();
 	for (int i = 0; i < files.size(); ++i)
 	{
