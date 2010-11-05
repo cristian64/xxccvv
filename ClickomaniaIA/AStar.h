@@ -7,7 +7,6 @@
 
 #ifndef ASTAR_H
 #define	ASTAR_H
-#include "AStarNode.h"
 #include <vector>
 #include <list>
 using namespace std;
@@ -37,41 +36,54 @@ public:
     };
 public:
     class Node;
-    AStar();
-    AStar(const AStar& orig);
+
+    AStar() {
+        currentSolution = 0;
+        baseNode = 0;
+        goalNode = 0;
+        steps = 0;
+
+    }
 
     int step() {
         if (this->open.empty()) {
-            return 0;
+            return -1; //ESPACIO EXPLORADO SIN EXITO;
         }
         this->steps++;
 
         Node *currentNode = this->open.front(); //nodo actual
         pop_heap(this->open.begin(), this->open.end(), Node::NodeCompare);
         this->open.pop_back(); //pop_heap se lleva el primero al final
-        if (*currentNode == *this->goalNode) {//hacer esto bien,
+        if (*(currentNode->data) == *(this->goalNode->data)) {//hacer esto bien, la comparacion sera mejorable?
             this->goalNode = currentNode->parent;
-            while (false) {// <------------------------------------------
-                //montar el camino solucion
-            }
+            Node *parentNode = this->goalNode->parent;
+            Node *childNode = this->goalNode;
+            do {
+                parentNode->child = childNode;
+                childNode = parentNode;
+                parentNode = parentNode->parent;
+
+            } while (this->baseNode != childNode);
+
             //falta liberar memoria etc etc
+            return 0; //OBJETIVO  ENCONTRADO
         } else {
             typename vector<Node*>::iterator closed_node;
             typename vector<Node*>::iterator open_node;
             typename list<Node*>::iterator child;
             //generar hijos
-            list<Node*> childs = currentNode->data->getChilds();
+            list<Node*> childs = currentNode->data->LISTA_DE_HIJOS(); //<---------------------
             //para cada hijo
 
-            int ESTIMACION = 0;
             for (child = childs.begin(); child != childs.end(); child++) {
-                float newg = currentNode->g + ESTIMACION;
-                //  se busca en abiertos
+                float childG = currentNode->g + currentNode->data->COSTE_HASTA(child); //<-----------------------
+                //se busca en abiertos
                 for (open_node = this->open.begin(); open_node != this->open.end(); open_node++) {
                     if (*(open_node->data) == *(child->data)) {
                         break;
                     }
                 }
+                //<--------- ya se optimizara
                 //se busca en cerrados
                 for (closed_node = this->closed.begin(); closed_node != this->closed.end(); closed_node++) {
                     if (*(closed_node->data) == *(child->data)) {
@@ -80,21 +92,21 @@ public:
                 }
 
                 if (open_node != open.end()) {
-                    if (open_node->g <= newg) {
+                    if (open_node->g <= childG) {
                         delete *child;
                         child = *open_node;
                     }
                 }
 
                 if (closed_node != closed.end()) {
-                    if (closed_node->g <= newg) {
+                    if (closed_node->g <= childG) {
                         delete *child;
                         child = *closed_node;
                     }
                 }
 
-                child->g = newg;
-                child->h = ESTIMACION;
+                child->g = childG;
+                child->h = child->data->ESTIMACION_HASTA_OBJETIVO(this->goalNode); //<------------------
                 child->f = child->g + child->h;
                 child->parent = currentNode;
 
@@ -111,17 +123,39 @@ public:
             }
             this->closed.push_back(currentNode);
         }
-        return 0; //cambiar
+        return 1; //busqueda incompleta
     }
-    void run();
 
-    void setBaseNode(Node *baseNode) {
-        this->baseNode = baseNode;
+    int run() {
+        //se debe poder para la busqueda, habra que meter alguna historia
+        //que mida el tiempo.
+        int status = 1;
+        while (status == 1) {//forma clasica, busca objetivos
+            status = this->step();
+        }
+        return status;
+    }
+
+    void setBaseNode(T *node) {
+        this->baseNode->data = node;
+        this->baseNode->parent = 0;
+        this->baseNode->child = 0;
         this->baseNode->g = 0;
-        this->baseNode->h = 0; //algo hay que estimar, funcionCota()?
+        this->baseNode->h = 0; //<----------------algo hay que estimar, funcionCota()?
+        this->baseNode->f = this->baseNode->g + this->baseNode->h;
+        
         this->open.push_back(this->baseNode);
         push_heap(this->open.begin(), this->open.end(), Node::NodeCompare);
         this->steps = 0;
+    }
+
+    void setGoalNode(T *node) {
+        this->goalNode->data = node;
+        this->goalNode->parent = 0;
+        this->goalNode->child = 0;
+        this->goalNode->g = 0;
+        this->goalNode->h = 0; //<---------------algo hay que estimar?, funcionCota()?
+        this->goalNode->f = this->goalNode->g + this->goalNode->h;
     }
 
     virtual ~AStar();
