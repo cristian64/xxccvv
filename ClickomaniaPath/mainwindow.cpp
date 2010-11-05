@@ -64,25 +64,19 @@ void MainWindow::on_tableWidget_cellClicked(int row, int column)
 {
     if(ui->tableWidget->item(row, column)->text()=="1"){
       ui->tableWidget->item(row, column)->setBackgroundColor(QColor(0, 0, 0));
-      ui->tableWidget->item(row, column)->setText("10000");
-      ui->tableWidget->item(row, column)->setTextColor(QColor(0, 0, 0));
+      ui->tableWidget->item(row, column)->setText("999");
+      //ui->tableWidget->item(row, column)->setTextColor(QColor(0, 0, 0));
+      ui->tableWidget->item(row, column)->setTextColor(QColor(255, 255, 255));
   }else{
       ui->tableWidget->item(row, column)->setBackgroundColor(QColor(255, 255, 255));
       ui->tableWidget->item(row, column)->setText("1");
-      ui->tableWidget->item(row, column)->setTextColor(QColor(255, 255, 255));
+      //ui->tableWidget->item(row, column)->setTextColor(QColor(255, 255, 255));
+      ui->tableWidget->item(row, column)->setTextColor(QColor(0, 0, 0));
   }
 }
 
 void MainWindow::on_tableWidget_cellEntered(int row, int column){
-    if(ui->tableWidget->item(row, column)->text()=="1"){
-      ui->tableWidget->item(row, column)->setBackgroundColor(QColor(0, 0, 0));
-      ui->tableWidget->item(row, column)->setText("10000");
-      ui->tableWidget->item(row, column)->setTextColor(QColor(0, 0, 0));
-  }else{
-      ui->tableWidget->item(row, column)->setBackgroundColor(QColor(255, 255, 255));
-      ui->tableWidget->item(row, column)->setText("1");
-      ui->tableWidget->item(row, column)->setTextColor(QColor(255, 255, 255));
-  }
+    this->on_tableWidget_cellClicked(row, column);
 }
 
 void MainWindow::on_pushButton_clicked()
