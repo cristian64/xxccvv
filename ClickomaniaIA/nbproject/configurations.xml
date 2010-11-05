@@ -33,6 +33,10 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>AStarPathfinder.cpp</itemPath>
+    <itemPath>AStarPathfinder.h</itemPath>
+    <itemPath>Map.cpp</itemPath>
+    <itemPath>Map.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

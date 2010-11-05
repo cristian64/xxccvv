@@ -34,15 +34,14 @@ public:
             return x->f < y->f;
         }
     };
+
 public:
-    class Node;
 
     AStar() {
         currentSolution = 0;
         baseNode = 0;
         goalNode = 0;
         steps = 0;
-
     }
 
     int step() {
@@ -52,7 +51,7 @@ public:
         this->steps++;
 
         Node *currentNode = this->open.front(); //nodo actual
-        pop_heap(this->open.begin(), this->open.end(), Node::NodeCompare);
+        pop_heap(this->open.begin(), this->open.end(), Node::NodeCompare());
         this->open.pop_back(); //pop_heap se lleva el primero al final
         if (*(currentNode->data) == *(this->goalNode->data)) {//hacer esto bien, la comparacion sera mejorable?
             this->goalNode = currentNode->parent;
@@ -85,6 +84,7 @@ public:
                 float childG = currentNode->g + currentNode->data->COSTE_HASTA(childNode); //<-----------------------
                 //se busca en abiertos
                 for (open_node = this->open.begin(); open_node != this->open.end(); open_node++) {
+
                     if (*(open_node->data) == *(childNode->data)) {
                         break;
                     }
@@ -165,13 +165,14 @@ public:
     }
 
     virtual ~AStar();
+    int steps;
 private:
     vector<Node*> open;
     vector<Node*> closed;
     Node *currentSolution;
     Node *baseNode;
     Node *goalNode;
-    int steps;
+    
 };
 
 #endif	/* ASTAR_H */
