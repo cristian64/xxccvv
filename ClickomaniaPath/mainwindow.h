@@ -27,6 +27,7 @@ private:
 private slots:
 	void on_tableWidget_cellClicked(int row, int column);
         void on_pushButton_clicked();
+        void on_tableWidget_cellEntered(int row, int column);
 };
 
 #endif // MAINWINDOW_H

@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	// Se bloquea la redimensión de las cabeceras.
 	ui->tableWidget->verticalHeader()->setResizeMode(QHeaderView::Fixed);
 	ui->tableWidget->horizontalHeader()->setResizeMode(QHeaderView::Fixed);
+        this->ui->tableWidget->setMouseTracking(false);
 }
 
 MainWindow::~MainWindow()
@@ -61,6 +62,18 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_tableWidget_cellClicked(int row, int column)
 {
+    if(ui->tableWidget->item(row, column)->text()=="1"){
+      ui->tableWidget->item(row, column)->setBackgroundColor(QColor(0, 0, 0));
+      ui->tableWidget->item(row, column)->setText("10000");
+      ui->tableWidget->item(row, column)->setTextColor(QColor(0, 0, 0));
+  }else{
+      ui->tableWidget->item(row, column)->setBackgroundColor(QColor(255, 255, 255));
+      ui->tableWidget->item(row, column)->setText("1");
+      ui->tableWidget->item(row, column)->setTextColor(QColor(255, 255, 255));
+  }
+}
+
+void MainWindow::on_tableWidget_cellEntered(int row, int column){
     if(ui->tableWidget->item(row, column)->text()=="1"){
       ui->tableWidget->item(row, column)->setBackgroundColor(QColor(0, 0, 0));
       ui->tableWidget->item(row, column)->setText("10000");

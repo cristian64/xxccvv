@@ -45,7 +45,7 @@ list< pair<Node*, int> > Node::childList() {
                 aux->y = currentY;
                 aux->map = this->map;
                 childs.push_back(pair<Node*, int>(aux, this->map->itemAt(currentX, currentY)->text().toInt()));
-                cout << "Generado vecino: " << currentX << ' ' << currentY << endl;
+                cout << "Generado vecino: " << currentX << ' ' << currentY << " "<<  this->map->itemAt(currentX, currentY)->text().toInt() << endl;
             }
         }
     }
