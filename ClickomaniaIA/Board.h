@@ -37,7 +37,6 @@ public:
     int getPosition(int column, int row) const;
     int setPosition(int column, int row, int color);
 
-
     /*
      * aplica gravedad vertical y lateral
      */
@@ -79,8 +78,7 @@ public:
     static void showMove(std::set<std::pair<int, int> > move);
     void show() const;
 
-
-
+    std::list<Board*> childList() const;
 
 private:
 

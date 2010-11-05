@@ -378,3 +378,15 @@ void Board::show() const {
     }
 }
 
+list<Board*> Board::childList() const {
+    list<Board*> boards;
+    Board* board;
+    list<set<std::pair<int, int> > > groupMoves = this->getGroupMoves();
+    list<set<std::pair<int, int> > >::iterator it;
+    for (it = groupMoves.begin(); it != groupMoves.end(); it++) {
+        board = new Board(*this);
+        board->removeGroup(*it);
+        boards.push_back(board);
+    }
+    return boards;
+}
