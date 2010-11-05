@@ -6,6 +6,7 @@
                    projectFiles="true"
                    kind="SOURCE_LOGICAL_FOLDER">
       <itemPath>AStar.h</itemPath>
+      <itemPath>AStarNode.h</itemPath>
       <itemPath>Board.h</itemPath>
       <itemPath>algorithms.h</itemPath>
     </logicalFolder>

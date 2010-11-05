@@ -239,7 +239,7 @@ std::set<std::pair<int, int> > Board::getGroupMove(int x, int y) const {
             for (int dir = 0; dir < 4; dir++) {// 4 /para cada vecino
                 actualX = actualTile.first + xDir[dir];
                 actualY = actualTile.second + yDir[dir];
-                    if (actualX >= 0 && actualX < *this->columns) {//si no se salen del tablero
+                if (actualX >= 0 && actualX < *this->columns) {//si no se salen del tablero
                     if (actualY >= 0 && actualY < *this->rows) {
                         if (this->getPosition(actualX, actualY) == this->getPosition(x, y)) {//si tienen el mismo color
                             pair<int, int> actual(actualX, actualY);

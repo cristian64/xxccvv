@@ -12,7 +12,7 @@ int Algorithms::llamadasRecursivas = 0;
 int Algorithms::sumaAlturaPodas = 0;
 
 //set<Board, boardCompare>Algorithms::generatedBoards;
-static set<pair<Board, pair<int, list<pair<int, int> > > > >  generatedBoards;
+static set<pair<Board, pair<int, list<pair<int, int> > > > > generatedBoards;
 
 void Algorithms::backtracking(Board &board) {
     list<set<pair<int, int> > > moves = board.getGroupMoves();
