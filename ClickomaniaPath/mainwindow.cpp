@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
 		{
 			ui->tableWidget->setItem(i, j, new QTableWidgetItem());
                         ui->tableWidget->item(i, j)->setText("1");
-                        ui->tableWidget->item(i, j)->setTextColor(QColor(255, 255, 255));
+                        //ui->tableWidget->item(i, j)->setTextColor(QColor(255, 255, 255));
 		}
 	}
 
@@ -45,18 +45,7 @@ MainWindow::~MainWindow()
 			ui->tableWidget->removeCellWidget(i, j);
 			delete item;
 		}
-	}
-
-	// Eliminamos la lista de ficheros.
-	while (ui->listWidget->item(0) != NULL)
-	{
-		QListWidgetItem* item = ui->listWidget->item(0);
-		ui->listWidget->removeItemWidget(item);
-		delete item;
-	}
-	// Y el tablero si llegó a crearse.
-	if (board != NULL)
-		delete board;
+        }
     delete ui;
 }
 
@@ -89,9 +78,16 @@ void MainWindow::on_pushButton_clicked()
 
     pathfinder.setBaseNode(&inicio);
     pathfinder.setGoalNode(&fin);
-
+    //pathfinder.setBaseNode(new Node(0,0));
+    //pathfinder.setGoalNode(new Node(19, 19));
 
     cout << pathfinder.run() << endl;
     cout << pathfinder.steps << endl;
+    //pathfinder.showSolution();
 
+    list<Node*> solution = pathfinder.solution();
+    list<Node*>::iterator it;
+    for (it=solution.begin(); it!=solution.end(); it++){
+      ui->tableWidget->item((*it)->y, (*it)->x)->setBackgroundColor(QColor(255, 0, 0));
+    }
 }

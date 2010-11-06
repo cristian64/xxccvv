@@ -17,8 +17,8 @@ public:
     Node();
     Node(int x, int y);
     Node(const Node& orig);
+    ~Node();
     void setMap(QTableWidget *map);
-    virtual ~Node();
     list<pair <Node*,int> > childList();
     bool operator==(Node &o);
 

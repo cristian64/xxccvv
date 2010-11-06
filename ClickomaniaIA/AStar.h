@@ -84,7 +84,7 @@ public:
                 float childG = currentNode->g + currentNode->data->COSTE_HASTA(childNode); //<-----------------------
                 //se busca en abiertos
                 for (open_node = this->open.begin(); open_node != this->open.end(); open_node++) {
-
+                    open_node->dat
                     if (*(open_node->data) == *(childNode->data)) {
                         break;
                     }
@@ -165,14 +165,13 @@ public:
     }
 
     virtual ~AStar();
-    int steps;
 private:
     vector<Node*> open;
     vector<Node*> closed;
     Node *currentSolution;
     Node *baseNode;
     Node *goalNode;
-    
+    int steps;
 };
 
 #endif	/* ASTAR_H */

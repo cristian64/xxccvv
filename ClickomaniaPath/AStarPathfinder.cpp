@@ -12,9 +12,12 @@ Node::Node() {
 }
 
 Node::Node(const Node& orig) {
+    this->x = orig.x;
+    this->y = orig.y;
 }
 
 Node::~Node() {
+    ;
 }
 
 Node::Node(int x, int y) {
@@ -23,6 +26,7 @@ Node::Node(int x, int y) {
 }
 
 bool Node::operator==(Node &o){
+    //cout << "comparando NODOS\n";
     return this->x == o.x && this->y == o.y;
 }
 
@@ -44,8 +48,8 @@ list< pair<Node*, int> > Node::childList() {
                 aux->x = currentX;
                 aux->y = currentY;
                 aux->map = this->map;
-                childs.push_back(pair<Node*, int>(aux, this->map->itemAt(currentX, currentY)->text().toInt()));
-                cout << "Generado vecino: " << currentX << ' ' << currentY << " "<<  this->map->itemAt(currentX, currentY)->text().toInt() << endl;
+                childs.push_back(pair<Node*, int>(aux, this->map->item(currentY, currentX)->text().toInt()));
+                //cout << "Generado vecino: " << currentX << ' ' << currentY << " "<<  this->map->item(currentY, currentX)->text().toInt() << endl;
             }
         }
     }

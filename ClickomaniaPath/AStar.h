@@ -31,13 +31,18 @@ public:
             //delete parent;
             //delete child;
         }
+        /*
+        bool operator==(Node &o){
+            cout << "MIERDA HOSTIA YA\n";
+            return false;
+        }*/
     };
 
     class NodeCompare {
     public:
 
         bool operator() (const Node *x, const Node*y) const {
-            return x->f < y->f;
+            return x->f > y->f;
         }
     };
 
@@ -49,6 +54,18 @@ public:
         goalNode = new Node;
         steps = 0;
     }
+    virtual ~AStar(){
+        typename vector<Node*>::iterator it;//it sobre cerrados
+        for (it = this->open.begin(); it != this->open.end(); it++) {
+            delete *(it);
+        }
+        for (it = this->closed.begin(); it != this->closed.end(); it++) {
+            delete *(it);
+        }
+        for (it = this->garbage.begin(); it != this->garbage.end(); it++) {
+            //delete *(it);
+        }
+    }
 
     int step() {
         if (this->open.empty()) {
@@ -59,16 +76,33 @@ public:
         Node *currentNode = this->open.front(); //nodo actual
         pop_heap(this->open.begin(), this->open.end(), NodeCompare());
         this->open.pop_back(); //pop_heap se lleva el primero al final
+
+        //cout << "comparando fin de busqueda\n";
+
         if (*(currentNode->data) == *(this->goalNode->data)) {//hacer esto bien, la comparacion sera mejorable?
-            this->goalNode = currentNode->parent;
+            this->goalNode->parent = currentNode->parent;
             Node *parentNode = this->goalNode->parent;
             Node *childNode = this->goalNode;
+
             do {
+                //cout <<"SOLUCION " <<  childNode->data->x << ',' << childNode->data->y << " "<< childNode->g <<  endl;
                 parentNode->child = childNode;
                 childNode = parentNode;
                 parentNode = parentNode->parent;
             } while (this->baseNode != childNode);
 
+            this->currentSolution = this->baseNode;
+            cout <<"G DEL CAMINO" <<  currentNode->g << endl;
+
+            typename vector<Node*>::iterator closed_node;//it sobre cerrados
+            for (closed_node = this->closed.begin(); closed_node != this->closed.end(); closed_node++) {
+                if ((*closed_node)->data == this->baseNode->data){
+                       this->closed.erase(closed_node);
+                       break;
+                }
+            }
+
+            //this->closed.push_back(currentNode);
             //falta liberar memoria etc etc
             return 0; //OBJETIVO  ENCONTRADO
         } else {
@@ -83,28 +117,42 @@ public:
 
             //convierte los nodos que nos da en nodosA*
             for (childObject = childs.begin(); childObject != childs.end(); childObject++) {
-                Node* aux = new Node;    
-                cout << (childObject->first)->x << ' ' << childObject->second << endl;
+                Node* aux = new Node;
+                //garbage.push_back(aux);
                 aux->data = childObject->first;//iguala punteros
                 childNodes.push_back(pair<Node*, int>(aux, childObject->second));
+
+                //cout << (childObject->first)->x << ' ' << childObject->second << endl;
             }
 
             //para cada hijo
             for (childNode = childNodes.begin(); childNode != childNodes.end(); childNode++) {
                 float childG = currentNode->g + childNode->second;
-                cout <<"SOY G: " << childG << endl;
+                //cout <<"G: " << childG << endl;
                 //se busca en abiertos
                 for (open_node = this->open.begin(); open_node != this->open.end(); open_node++) {
-                    if ((*open_node)->data == childNode->first->data) {
-                        cout << "ESTOY EN ABIERTOS" << endl;
+                    //cout << "buscando en abiertos\n";
+                    if (*((*open_node)->data) == *(childNode->first->data)) {
+                        //cout << "ESTOY EN ABIERTOS" << endl;
+
                         break;
                     }
                 }
                 //<--------- ya se optimizara, si esta en abiertos no deberia estar en cerrados
                 //se busca en cerrados
                 for (closed_node = this->closed.begin(); closed_node != this->closed.end(); closed_node++) {
-                    if (((*closed_node)->data) == childNode->first->data) {
-                        cout << "ESTOY EN CERRADOS"<< endl;
+                    /*
+                    cout << "Soy: " << currentNode->data->x << ' ' << currentNode->data->y << endl;
+                    cout << "buscando en cerrados a mi hijo:\n";
+                    cout << (childNode->first->data)->x << endl;
+                    cout << (childNode->first->data)->y << endl;
+                    cout << "Y lo estoy comparando con:\n";
+                    cout << ((*closed_node)->data)->x << endl;
+                    cout << ((*closed_node)->data)->y << endl;
+                    */
+
+                    if (*((*closed_node)->data) == *(childNode->first->data)) {
+                        //cout << "ESTOY EN CERRADOS"<< endl;
                         break;
                     }
                 }
@@ -114,12 +162,13 @@ public:
                 childNode->first->f = childNode->first->g + childNode->first->h;
                 childNode->first->parent = currentNode;
 
-                if (open_node != open.end()) {//si se encontro en aviertos
+                if (open_node != open.end()) {//si se encontro en abiertos
                     if ((*open_node)->g <= childG) {//es peor que lo que tenemos
                         delete childNode->first;//olvida el nuevo
                        // (*childNode) = open_node;
                     }else{//es mejor que lo que tenemos
-                        open.erase(open_node);//se saca el viejo
+                        //garbage.push_back(*open_node);
+                        open.erase(open_node);//se saca el viejo, aqui seguramente se pierde un nodo
                         make_heap(open.begin(), open.end(), NodeCompare());//se reordena el heap
                         open.push_back(childNode->first);//se mete el nuevo
                         push_heap(open.begin(), open.end(), NodeCompare());//se reordena el heap
@@ -131,7 +180,8 @@ public:
                         delete childNode->first;//olvida el nuevo
                         //childNode = *closed_node;
                     }else{//es mejor que lo que tenemos
-                        closed.erase(closed_node);//se saca de cerrados
+                        //garbage.push_back(*closed_node);
+                        closed.erase(closed_node);//se saca de cerrados, aqui seguramente se pierde un nodo
                         open.push_back(childNode->first);//se mete en abiertos
                         push_heap(open.begin(), open.end(), NodeCompare());//se reordena el heap
                     }
@@ -145,7 +195,7 @@ public:
 
             }
             this->closed.push_back(currentNode);
-            cout << "NODOS EN CLOSED: " << this->closed.size() << endl;
+            //cout << "NODOS EN CLOSED: " << this->closed.size() << endl;
         }
         return 1; //busqueda incompleta
     }
@@ -160,7 +210,9 @@ public:
         return status;
     }
 
+
     void setBaseNode(T *node) {
+        //this->baseNode->data = new T(*node); <-asi casca, a saber por que
         this->baseNode->data = node;
         this->baseNode->parent = 0;
         this->baseNode->child = 0;
@@ -173,8 +225,11 @@ public:
         this->steps = 0;
     }
 
+
+
     void setGoalNode(T *node) {
-        this->goalNode->data = node;
+        //this->goalNode->data = new T(*node); //<-idem del anterior
+        this->goalNode->data =node;
         this->goalNode->parent = 0;
         this->goalNode->child = 0;
         this->goalNode->g = 0;
@@ -182,12 +237,32 @@ public:
         this->goalNode->f = this->goalNode->g + this->goalNode->h;
     }
 
-    virtual ~AStar(){
+    void showSolution(){
+        Node *currentNode = currentSolution;
+        while (currentNode != goalNode){
+            cout << currentNode->data->x << " " << currentNode->data->y << endl;
+            currentNode = currentNode->child;
+        }
+        cout << currentNode->data->x << " " << currentNode->data->y << endl;
     }
+
+    list<T*> solution(){
+        list<T*> solution;
+        Node* currentNode = this->baseNode;
+        while(currentNode != this->goalNode){
+            solution.push_back(currentNode->data);
+            currentNode = currentNode->child;
+        }
+        solution.push_back(currentNode->data);//no
+
+        return solution;
+    }
+
     int steps;
 private:
     vector<Node*> open;
     vector<Node*> closed;
+    vector<Node*> garbage;
     Node *currentSolution;
     Node *baseNode;
     Node *goalNode;

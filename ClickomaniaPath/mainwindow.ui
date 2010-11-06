@@ -254,24 +254,11 @@
      </property>
     </column>
    </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>650</x>
-      <y>10</y>
-      <width>151</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Tableros encontrados</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>650</x>
-      <y>460</y>
+      <x>10</x>
+      <y>660</y>
       <width>241</width>
       <height>27</height>
      </rect>
@@ -283,8 +270,8 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>650</x>
-      <y>520</y>
+      <x>260</x>
+      <y>650</y>
       <width>151</width>
       <height>17</height>
      </rect>
@@ -296,8 +283,8 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>650</x>
-      <y>540</y>
+      <x>260</x>
+      <y>670</y>
       <width>151</width>
       <height>17</height>
      </rect>
@@ -309,8 +296,8 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>800</x>
-      <y>520</y>
+      <x>410</x>
+      <y>650</y>
       <width>62</width>
       <height>17</height>
      </rect>
@@ -322,50 +309,14 @@
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>800</x>
-      <y>540</y>
+      <x>410</x>
+      <y>670</y>
       <width>62</width>
       <height>17</height>
      </rect>
     </property>
     <property name="text">
      <string>0</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>650</y>
-      <width>631</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_2">
-    <property name="geometry">
-     <rect>
-      <x>650</x>
-      <y>650</y>
-      <width>241</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Aplicar siguiente movimiento</string>
-    </property>
-   </widget>
-   <widget class="QListWidget" name="listWidget">
-    <property name="geometry">
-     <rect>
-      <x>650</x>
-      <y>30</y>
-      <width>241</width>
-      <height>421</height>
-     </rect>
     </property>
    </widget>
   </widget>
