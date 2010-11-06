@@ -7,6 +7,9 @@
                    kind="SOURCE_LOGICAL_FOLDER">
       <itemPath>AStar.h</itemPath>
       <itemPath>Board.h</itemPath>
+      <itemPath>BoardNode.cpp</itemPath>
+      <itemPath>BoardNode.h</itemPath>
+      <itemPath>NodeInterface.h</itemPath>
       <itemPath>algorithms.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -33,8 +36,6 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
-    <itemPath>NodeInterface.cpp</itemPath>
-    <itemPath>NodeInterface.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

@@ -34,8 +34,8 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/NodeInterface.o \
 	${OBJECTDIR}/algorithms.o \
+	${OBJECTDIR}/BoardNode.o \
 	${OBJECTDIR}/Board.o
 
 
@@ -68,15 +68,15 @@ ${OBJECTDIR}/main.o: nbproject/Makefile-${CND_CONF}.mk main.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O3 -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
-${OBJECTDIR}/NodeInterface.o: nbproject/Makefile-${CND_CONF}.mk NodeInterface.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O3 -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/NodeInterface.o NodeInterface.cpp
-
 ${OBJECTDIR}/algorithms.o: nbproject/Makefile-${CND_CONF}.mk algorithms.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O3 -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/algorithms.o algorithms.cpp
+
+${OBJECTDIR}/BoardNode.o: nbproject/Makefile-${CND_CONF}.mk BoardNode.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O3 -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/BoardNode.o BoardNode.cpp
 
 ${OBJECTDIR}/Board.o: nbproject/Makefile-${CND_CONF}.mk Board.cpp 
 	${MKDIR} -p ${OBJECTDIR}
