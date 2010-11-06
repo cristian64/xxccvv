@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   AStarPathfinder.h
  * Author: juen
  *
@@ -9,10 +9,11 @@
 #define	ASTARPATHFINDER_H
 #include <list>
 #include <utility>
- #include <QtGui/QTableWidget>
+#include <QtGui/QTableWidget>
+#include "NodeInterface.h"
 using namespace std;
 
-class Node {
+class Node : public NodeInterface<Node> {
 public:
     Node();
     Node(int x, int y);
@@ -20,9 +21,9 @@ public:
     ~Node();
     void setMap(QTableWidget *map);
     list<pair <Node*, int> > childList();
-    bool operator==(Node &o);
-     Node& operator=(Node &o);
-     int heuristic(Node* goal);
+    bool operator==(const Node &o);
+    Node & operator=(const Node &o);
+    int heuristic(Node* goal);
 
     int x;
     int y;

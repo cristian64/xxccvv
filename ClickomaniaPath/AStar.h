@@ -28,12 +28,7 @@ public:
         }
 
         ~Node() {
-            if (data != 0) {
-                delete data;
-                data = 0;
-            }
-            //delete parent;
-            //delete child;
+            delete data;
         }
     };
 
@@ -55,18 +50,14 @@ public:
     }
 
     virtual ~AStar() {
-        typename vector<Node*>::iterator it; //it sobre cerrados
+        typename vector<Node*>::iterator it;
         for (it = this->open.begin(); it != this->open.end(); it++) {
             delete *(it);
         }
         for (it = this->closed.begin(); it != this->closed.end(); it++) {
             delete *(it);
         }
-        for (it = this->garbage.begin(); it != this->garbage.end(); it++) {
-            //delete *(it);
-        }
         delete goalNode;
-
     }
 
     int step() {
@@ -85,28 +76,18 @@ public:
             Node *childNode = this->goalNode;
 
             do {
-                //cout <<"SOLUCION " <<  childNode->data->x << ',' << childNode->data->y << " "<< childNode->g <<  endl;
                 parentNode->child = childNode;
                 childNode = parentNode;
                 parentNode = parentNode->parent;
             } while (this->baseNode != childNode);
 
             this->currentSolution = this->baseNode;
-            cout << "G DEL CAMINO" << currentNode->g << endl;
 
-            /*
-            typename vector<Node*>::iterator closed_node;//it sobre cerrados
-            for (closed_node = this->closed.begin(); closed_node != this->closed.end(); closed_node++) {
-                if ((*closed_node)->data == this->baseNode->data){
-                       this->closed.erase(closed_node);
-                       break;
-                }
-            }
-             */
             //se añade el nodo final a closed, mas que nada para liberarlo con los demas
             this->closed.push_back(currentNode);
 
             return 0; //OBJETIVO  ENCONTRADO
+
         } else {
             typename vector<Node*>::iterator closed_node; //it sobre cerrados
             typename vector<Node*>::iterator open_node; //it sobre abiertos
@@ -116,29 +97,21 @@ public:
 
             //pide los vecinos del nodo y el coste de transicion
             list<pair<T*, int> > childs = currentNode->data->childList();
-
             //envuelve los nodos del problema en nodos de A*
             for (childObject = childs.begin(); childObject != childs.end(); childObject++) {
                 Node* aux = new Node;
-                //garbage.push_back(aux);
                 aux->data = childObject->first; //iguala punteros
                 childNodes.push_back(pair<Node*, int>(aux, childObject->second));
-
-                //cout << (childObject->first)->x << ' ' << childObject->second << endl;
             }
 
             //para cada hijo
-            //cout << currentNode->data->x << " " << currentNode->data->y << endl;
             for (childNode = childNodes.begin(); childNode != childNodes.end(); childNode++) {
-
-                //cout <<"G: " << childG << endl;
                 //se busca en abiertos
                 for (open_node = this->open.begin(); open_node != this->open.end(); open_node++) {
                     if (*((*open_node)->data) == *(childNode->first->data)) {
                         break;
                     }
                 }
-                //<--------- ya se optimizara, si esta en abiertos no deberia estar en cerrados
                 if (open_node == this->open.end()) {
                     //se busca en cerrados
                     for (closed_node = this->closed.begin(); closed_node != this->closed.end(); closed_node++) {
@@ -155,13 +128,9 @@ public:
                 childNode->first->f = childNode->first->g + childNode->first->h;
                 childNode->first->parent = currentNode;
 
-                //cout << "\t" <<childNode->first->data->x << " " << childNode->first->data->y
-                //<< "|" << childG << " " << childH << " " << childNode->first->f<< endl;
-
                 if (open_node != open.end()) {//si se encontro en abiertos
                     if ((*open_node)->g <= childG) {//es peor que lo que tenemos
                         delete childNode->first; //olvida el nuevo
-                        // (*childNode) = open_node;
                     } else {//es mejor que lo que tenemos
                         Node* aux = *open_node; //probablemente se podria hacer directamente el delete
                         open.erase(open_node); //se saca el viejo, aqui seguramente se pierde un nodo
@@ -173,7 +142,6 @@ public:
                 } else if (closed_node != closed.end()) {//si se encontro en cerrados
                     if ((*closed_node)->g <= childG) {//es peor que lo que teniamos
                         delete childNode->first; //olvida el nuevo
-                        //childNode = *closed_node;
                     } else {//es mejor que lo que tenemos
                         Node* aux = *closed_node; //probablemente se podria hacer directamente el delete
                         closed.erase(closed_node); //se saca de cerrados, aqui seguramente se pierde un nodo
@@ -182,14 +150,11 @@ public:
                         push_heap(open.begin(), open.end(), NodeCompare()); //se reordena el heap
                     }
                 } else {
-                    //if (open_node == open.end() && closed_node == closed.end()) {//si no se encontro->es nuevo
                     open.push_back(childNode->first); //se mete en abiertos
                     push_heap(open.begin(), open.end(), NodeCompare()); //se reordena el heap
                 }
-
             }
             this->closed.push_back(currentNode);
-            //cout << "NODOS EN CLOSED: " << this->closed.size() << endl;
         }
         return 1; //busqueda incompleta
     }
@@ -207,13 +172,11 @@ public:
     void setBaseNode(T node) {
         this->baseNode->data = new T;
         *this->baseNode->data = node;
-
         this->baseNode->parent = 0;
         this->baseNode->child = 0;
         this->baseNode->g = 0;
         this->baseNode->h = 0; //<----------------algo hay que estimar, funcionCota()?
         this->baseNode->f = this->baseNode->g + this->baseNode->h;
-
         this->open.push_back(this->baseNode);
         push_heap(this->open.begin(), this->open.end(), NodeCompare());
         this->steps = 0;
@@ -222,11 +185,10 @@ public:
     void setGoalNode(T node) {
         this->goalNode->data = new T;
         *this->goalNode->data = node;
-
         this->goalNode->parent = 0;
         this->goalNode->child = 0;
         this->goalNode->g = 0;
-        this->goalNode->h = 0; //<---------------algo hay que estimar?, funcionCota()?
+        this->goalNode->h = 0;
         this->goalNode->f = this->goalNode->g + this->goalNode->h;
     }
 

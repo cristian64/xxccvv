@@ -34,8 +34,7 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/AStarPathfinder.o \
-	${OBJECTDIR}/Map.o \
+	${OBJECTDIR}/NodeInterface.o \
 	${OBJECTDIR}/algorithms.o \
 	${OBJECTDIR}/Board.o
 
@@ -69,15 +68,10 @@ ${OBJECTDIR}/main.o: nbproject/Makefile-${CND_CONF}.mk main.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
-${OBJECTDIR}/AStarPathfinder.o: nbproject/Makefile-${CND_CONF}.mk AStarPathfinder.cpp 
+${OBJECTDIR}/NodeInterface.o: nbproject/Makefile-${CND_CONF}.mk NodeInterface.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/AStarPathfinder.o AStarPathfinder.cpp
-
-${OBJECTDIR}/Map.o: nbproject/Makefile-${CND_CONF}.mk Map.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/Map.o Map.cpp
+	$(COMPILE.cc) -g -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/NodeInterface.o NodeInterface.cpp
 
 ${OBJECTDIR}/algorithms.o: nbproject/Makefile-${CND_CONF}.mk algorithms.cpp 
 	${MKDIR} -p ${OBJECTDIR}

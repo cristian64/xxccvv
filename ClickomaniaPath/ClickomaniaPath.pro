@@ -8,6 +8,7 @@ DEPENDPATH += .
 INCLUDEPATH += .
 
 # Input
-HEADERS += AStar.h AStarPathfinder.h Board.h mainwindow.h
+HEADERS += AStar.h AStarPathfinder.h Board.h mainwindow.h \
+    NodeInterface.h
 FORMS += mainwindow.ui
 SOURCES += AStarPathfinder.cpp Board.cpp main.cpp mainwindow.cpp

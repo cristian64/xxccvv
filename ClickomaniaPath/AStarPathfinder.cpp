@@ -1,13 +1,14 @@
-/* 
+/*
  * File:   AStarPathfinder.cpp
  * Author: juen
- * 
+ *
  * Created on 5 de noviembre de 2010, 15:06
  */
 
 #include "AStarPathfinder.h"
 #include <iostream>
 using namespace std;
+
 Node::Node() {
 }
 
@@ -18,7 +19,6 @@ Node::Node(const Node& orig) {
 }
 
 Node::~Node() {
-    ;
 }
 
 Node::Node(int x, int y) {
@@ -26,23 +26,22 @@ Node::Node(int x, int y) {
     this->y = y;
 }
 
-bool Node::operator==(Node &o){
-    //cout << "comparando NODOS\n";
+bool Node::operator==(const Node &o) {
     return this->x == o.x && this->y == o.y;
 }
 
-void Node::setMap(QTableWidget *map){
+void Node::setMap(QTableWidget *map) {
     this->map = map;
 }
 
-Node& Node::operator=(Node &o){
+Node& Node::operator=(const Node &o) {
     this->x = o.x;
     this->y = o.y;
     this->map = o.map;
     return *this;
 }
 
-int Node::heuristic(Node* goal){
+int Node::heuristic(Node* goal) {
     return abs(goal->x - this->x) + abs(goal->y - this->y);
 }
 
@@ -54,17 +53,17 @@ list< pair<Node*, int> > Node::childList() {
     for (int i = 0; i < 4; i++) {
         currentX = x + xDir[i];
         currentY = y + yDir[i];
-          if (currentX < map->columnCount() && currentX >= 0) {
+        if (currentX < map->columnCount() && currentX >= 0) {
             if (currentY < map->rowCount() && currentY >= 0) {
                 Node* aux = new Node();
                 aux->x = currentX;
                 aux->y = currentY;
                 aux->map = this->map;
                 childs.push_back(pair<Node*, int>(aux, this->map->item(currentY, currentX)->text().toInt()));
-                //cout << "Generado vecino: " << currentX << ' ' << currentY << " "<<  this->map->item(currentY, currentX)->text().toInt() << endl;
             }
         }
     }
     return childs;
 }
+
 
