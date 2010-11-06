@@ -76,8 +76,8 @@ void MainWindow::on_pushButton_clicked()
     inicio.setMap(this->ui->tableWidget);
     fin.setMap(this->ui->tableWidget);
 
-    pathfinder.setBaseNode(&inicio);
-    pathfinder.setGoalNode(&fin);
+    pathfinder.setBaseNode(inicio);
+    pathfinder.setGoalNode(fin);
     //pathfinder.setBaseNode(new Node(0,0));
     //pathfinder.setGoalNode(new Node(19, 19));
 

@@ -14,6 +14,8 @@ Node::Node() {
 Node::Node(const Node& orig) {
     this->x = orig.x;
     this->y = orig.y;
+    this->map = orig.map;
+
 }
 
 Node::~Node() {
@@ -32,6 +34,13 @@ bool Node::operator==(Node &o){
 
 void Node::setMap(QTableWidget *map){
     this->map = map;
+}
+
+Node& Node::operator=(Node &o){
+    this->x = o.x;
+    this->y = o.y;
+    this->map = o.map;
+    return *this;
 }
 
 list< pair<Node*, int> > Node::childList() {

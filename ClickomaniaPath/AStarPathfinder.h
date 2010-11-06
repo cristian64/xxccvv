@@ -21,6 +21,7 @@ public:
     void setMap(QTableWidget *map);
     list<pair <Node*,int> > childList();
     bool operator==(Node &o);
+     Node& operator=(Node &o);
 
     int x;
     int y;

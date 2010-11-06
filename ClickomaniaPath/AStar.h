@@ -31,11 +31,6 @@ public:
             //delete parent;
             //delete child;
         }
-        /*
-        bool operator==(Node &o){
-            cout << "MIERDA HOSTIA YA\n";
-            return false;
-        }*/
     };
 
     class NodeCompare {
@@ -54,6 +49,7 @@ public:
         goalNode = new Node;
         steps = 0;
     }
+
     virtual ~AStar(){
         typename vector<Node*>::iterator it;//it sobre cerrados
         for (it = this->open.begin(); it != this->open.end(); it++) {
@@ -65,6 +61,8 @@ public:
         for (it = this->garbage.begin(); it != this->garbage.end(); it++) {
             //delete *(it);
         }
+        delete goalNode;
+
     }
 
     int step() {
@@ -77,9 +75,7 @@ public:
         pop_heap(this->open.begin(), this->open.end(), NodeCompare());
         this->open.pop_back(); //pop_heap se lleva el primero al final
 
-        //cout << "comparando fin de busqueda\n";
-
-        if (*(currentNode->data) == *(this->goalNode->data)) {//hacer esto bien, la comparacion sera mejorable?
+        if (*(currentNode->data) == *(this->goalNode->data)) {
             this->goalNode->parent = currentNode->parent;
             Node *parentNode = this->goalNode->parent;
             Node *childNode = this->goalNode;
@@ -94,6 +90,7 @@ public:
             this->currentSolution = this->baseNode;
             cout <<"G DEL CAMINO" <<  currentNode->g << endl;
 
+            /*
             typename vector<Node*>::iterator closed_node;//it sobre cerrados
             for (closed_node = this->closed.begin(); closed_node != this->closed.end(); closed_node++) {
                 if ((*closed_node)->data == this->baseNode->data){
@@ -101,9 +98,10 @@ public:
                        break;
                 }
             }
+            */
+            //deberia meterse, pero asi se evita un fallo de memoria, intentar liberar una cosaque es estatica
+            this->closed.push_back(currentNode);
 
-            //this->closed.push_back(currentNode);
-            //falta liberar memoria etc etc
             return 0; //OBJETIVO  ENCONTRADO
         } else {
             typename vector<Node*>::iterator closed_node;//it sobre cerrados
@@ -168,6 +166,7 @@ public:
                        // (*childNode) = open_node;
                     }else{//es mejor que lo que tenemos
                         //garbage.push_back(*open_node);
+                        cout << "MIERDA PURA";
                         open.erase(open_node);//se saca el viejo, aqui seguramente se pierde un nodo
                         make_heap(open.begin(), open.end(), NodeCompare());//se reordena el heap
                         open.push_back(childNode->first);//se mete el nuevo
@@ -181,6 +180,7 @@ public:
                         //childNode = *closed_node;
                     }else{//es mejor que lo que tenemos
                         //garbage.push_back(*closed_node);
+                        cout << "MIERDA PURA";
                         closed.erase(closed_node);//se saca de cerrados, aqui seguramente se pierde un nodo
                         open.push_back(childNode->first);//se mete en abiertos
                         push_heap(open.begin(), open.end(), NodeCompare());//se reordena el heap
@@ -211,9 +211,12 @@ public:
     }
 
 
-    void setBaseNode(T *node) {
+    void setBaseNode(T node) {
         //this->baseNode->data = new T(*node); <-asi casca, a saber por que
-        this->baseNode->data = node;
+        //this->baseNode->data = node;
+        this->baseNode->data = new T;
+        *this->baseNode->data = node;
+
         this->baseNode->parent = 0;
         this->baseNode->child = 0;
         this->baseNode->g = 0;
@@ -225,11 +228,12 @@ public:
         this->steps = 0;
     }
 
-
-
-    void setGoalNode(T *node) {
+    void setGoalNode(T node) {
         //this->goalNode->data = new T(*node); //<-idem del anterior
-        this->goalNode->data =node;
+        //this->goalNode->data =node;
+        this->goalNode->data = new T;
+        *this->goalNode->data = node;
+
         this->goalNode->parent = 0;
         this->goalNode->child = 0;
         this->goalNode->g = 0;
