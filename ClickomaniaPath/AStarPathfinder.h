@@ -19,9 +19,10 @@ public:
     Node(const Node& orig);
     ~Node();
     void setMap(QTableWidget *map);
-    list<pair <Node*,int> > childList();
+    list<pair <Node*, int> > childList();
     bool operator==(Node &o);
      Node& operator=(Node &o);
+     int heuristic(Node* goal);
 
     int x;
     int y;

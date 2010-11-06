@@ -15,7 +15,6 @@ Node::Node(const Node& orig) {
     this->x = orig.x;
     this->y = orig.y;
     this->map = orig.map;
-
 }
 
 Node::~Node() {
@@ -41,6 +40,10 @@ Node& Node::operator=(Node &o){
     this->y = o.y;
     this->map = o.map;
     return *this;
+}
+
+int Node::heuristic(Node* goal){
+    return abs(goal->x - this->x) + abs(goal->y - this->y);
 }
 
 list< pair<Node*, int> > Node::childList() {

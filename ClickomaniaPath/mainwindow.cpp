@@ -82,7 +82,7 @@ void MainWindow::on_pushButton_clicked()
     //pathfinder.setGoalNode(new Node(19, 19));
 
     cout << pathfinder.run() << endl;
-    cout << pathfinder.steps << endl;
+    cout << pathfinder.getSteps() << endl;
     //pathfinder.showSolution();
 
     list<Node*> solution = pathfinder.solution();
