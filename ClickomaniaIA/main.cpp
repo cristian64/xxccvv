@@ -12,6 +12,8 @@
 #include <cstring>
 #include "algorithms.h"
 #include <ctime>
+#include "AStar.h"
+#include "BoardNode.h"
 
 using namespace std;
 
@@ -73,7 +75,7 @@ void manual(Board &board) {
     return;
 }
 
-void backtrackingProgresivo(Board &board) {
+int backtrackingProgresivo(Board &board) {
     // Inicialización.
     Algorithms::maxMoves.clear();
     Algorithms::maxScore = 0;
@@ -115,12 +117,16 @@ void backtrackingProgresivo(Board &board) {
         cout << "(" << it->first << "," << it->second << "),";
     }
     cout << "-> " << maxScore << endl;
+    return maxScore;
 }
 
 int main(int argc, char** argv) {
     time_t t1, t2;
     time(&t1);
     Board board(argv[1]);
+    BoardNode board2(argv[1]);
+    AStar<BoardNode> astar;
+    astar.setBaseNode(board2);
     if (argc < 3) {
         aplicarSecuencia(board);
         //parchazo para mirar los movimientos posibles al pasarle un tablero intermedio
@@ -150,8 +156,13 @@ int main(int argc, char** argv) {
                 backtrackingProgresivo(board);
                 break;
             case 4:
+                astar.setCurrentMaxScore(backtrackingProgresivo(board));
+                astar.run();
+                //astar.step();
+                cout << astar.getSpawnedNodes() << endl;
                 break;
             default:
+                
                 break;
         }
     }

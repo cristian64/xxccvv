@@ -36,7 +36,7 @@ public:
     public:
 
         bool operator() (const Node *x, const Node*y) const {
-            return x->f > y->f;
+            return x->f < y->f;
         }
     };
 
@@ -47,6 +47,7 @@ public:
         baseNode = new Node;
         goalNode = new Node;
         steps = 0;
+        spawnedNodes = 0;
     }
 
     virtual ~AStar() {
@@ -57,21 +58,22 @@ public:
         for (it = this->closed.begin(); it != this->closed.end(); it++) {
             delete *(it);
         }
-        delete goalNode;
+        //delete goalNode;
     }
 
     int step() {
         if (this->open.empty()) {
+            cout << "NODOS ACABADOS\n";
             return -1; //ESPACIO EXPLORADO SIN EXITO;
         }
-        
+
         this->steps++;
 
         Node *currentNode = this->open.front(); //nodo actual
         pop_heap(this->open.begin(), this->open.end(), NodeCompare());
         this->open.pop_back(); //pop_heap se lleva el primero al final
 
-        if (*(currentNode->data) == *(this->goalNode->data)) {
+        /*if (*(currentNode->data) == *(this->goalNode->data)) {
             this->goalNode->parent = currentNode->parent;
             Node *parentNode = this->goalNode->parent;
             Node *childNode = this->goalNode;
@@ -88,75 +90,116 @@ public:
             this->closed.push_back(currentNode);
 
             return 0; //OBJETIVO  ENCONTRADO
+        } else {*/
+        typename vector<Node*>::iterator closed_node; //it sobre cerrados
+        typename vector<Node*>::iterator open_node; //it sobre abiertos
+        typename list<pair<Node*, int> >::iterator childNode; //it nodos tipo A* y el coste del paso
+        typename list<pair<T*, int> >::iterator childObject; //it Nodos tipo T y el coste del paso
+        list<pair<Node*, int> > childNodes; //lista de vecinos en nodos A*
 
-        } else {
-            typename vector<Node*>::iterator closed_node; //it sobre cerrados
-            typename vector<Node*>::iterator open_node; //it sobre abiertos
-            typename list<pair<Node*, int> >::iterator childNode; //it nodos tipo A* y el coste del paso
-            typename list<pair<T*, int> >::iterator childObject; //it Nodos tipo T y el coste del paso
-            list<pair<Node*, int> > childNodes; //lista de vecinos en nodos A*
+        //pide los vecinos del nodo y el coste de transicion
+        list<pair<T*, int> > childs = currentNode->data->childList();
+        //cout << "CHILDSIZE: " << childs.size() << endl;
+        //añadido para clickomania
+        //-----------------------------------------------------------------
+        if (currentNode->g > this->currentMaxScore) {
+            this->goalNode = currentNode;
+            currentMaxScore = currentNode->g;
+            cout << "MAX SCORE: " << currentMaxScore << endl;
+        }
 
-            //pide los vecinos del nodo y el coste de transicion
-            list<pair<T*, int> > childs = currentNode->data->childList();
-            //envuelve los nodos del problema en nodos de A*
-            for (childObject = childs.begin(); childObject != childs.end(); childObject++) {
-                Node* aux = new Node;
-                aux->data = childObject->first; //iguala punteros
-                childNodes.push_back(pair<Node*, int>(aux, childObject->second));
+        if (currentNode->f < currentMaxScore) {
+            cout << " a la mierda rama brozosa\n";
+            closed.push_back(currentNode);
+            return 1;
+        }
+
+        if (childs.size() == 0) {//hemos llegado a una solucion
+            cout << "\nSOLUCION CON G: " << currentNode->g << endl;
+            if (currentNode->g >= this->currentMaxScore) {
+                this->goalNode = currentNode;
+                currentMaxScore = currentNode->g;
+                cout << "PUNTUACION MAXIMA: " << currentMaxScore << endl;
+                Node *aux = goalNode;
+                do {
+                    cout << "(" << aux->data->x << ", " << aux->data->y << ")";
+                    aux = aux->parent;
+                } while (aux != baseNode);
             }
+        }
+        //-----------------------------------------------------------------
+        //envuelve los nodos del problema en nodos de A*
+        for (childObject = childs.begin(); childObject != childs.end(); childObject++) {
+            Node* aux = new Node;
+            aux->data = childObject->first; //iguala punteros
+            childNodes.push_back(pair<Node*, int>(aux, childObject->second));
+        }
 
-            //para cada hijo
-            for (childNode = childNodes.begin(); childNode != childNodes.end(); childNode++) {
-                //se busca en abiertos
-                for (open_node = this->open.begin(); open_node != this->open.end(); open_node++) {
-                    if (*((*open_node)->data) == *(childNode->first->data)) {
+        //para cada hijo
+        for (childNode = childNodes.begin(); childNode != childNodes.end(); childNode++) {
+            //se busca en abiertos
+            for (open_node = this->open.begin(); open_node != this->open.end(); open_node++) {
+                if (*((*open_node)->data) == *(childNode->first->data)) {
+                    //cout << "\nprimero:\n";
+                    //(*open_node)->data->show();
+                    //cout << "\nsegundo:\n";
+                    //childNode->first->data->show();
+                    //cout << "estoy en abiertos\n";
+                    break;
+                }
+            }
+            if (open_node == this->open.end()) {
+                //se busca en cerrados
+                for (closed_node = this->closed.begin(); closed_node != this->closed.end(); closed_node++) {
+                    if (*((*closed_node)->data) == *(childNode->first->data)) {
+                        //cout << "estoy en cerrados\n";
                         break;
                     }
                 }
-                if (open_node == this->open.end()) {
-                    //se busca en cerrados
-                    for (closed_node = this->closed.begin(); closed_node != this->closed.end(); closed_node++) {
-                        if (*((*closed_node)->data) == *(childNode->first->data)) {
-                            break;
-                        }
-                    }
+            }
+
+            float childG = currentNode->g + childNode->second;
+            float childH = childNode->first->data->heuristic(this->goalNode->data);
+            //float childH = childNode->first->data->entropy
+            childNode->first->g = childG;
+            childNode->first->h = childH;
+            childNode->first->f = childNode->first->g + childNode->first->h;
+            childNode->first->parent = currentNode;
+            //cout << "MI PADRE ES:\n";
+            //childNode->first->parent->data->show();
+
+
+
+            if (open_node != open.end()) {//si se encontro en abiertos
+                if ((*open_node)->g >= childG) {//es peor que lo que tenemos
+                    delete childNode->first; //olvida el nuevo
+                } else {//es mejor que lo que tenemos
+                    Node* aux = *open_node; //probablemente se podria hacer directamente el delete
+                    open.erase(open_node); //se saca el viejo, aqui seguramente se pierde un nodo
+                    delete aux;
+                    make_heap(open.begin(), open.end(), NodeCompare()); //se reordena el heap
+                    open.push_back(childNode->first); //se mete el nuevo
+                    push_heap(open.begin(), open.end(), NodeCompare()); //se reordena el heap
                 }
-
-                float childG = currentNode->g + childNode->second;
-                float childH = childNode->first->data->heuristic(this->goalNode->data);
-                childNode->first->g = childG;
-                childNode->first->h = childH;
-                childNode->first->f = childNode->first->g + childNode->first->h;
-                childNode->first->parent = currentNode;
-
-                if (open_node != open.end()) {//si se encontro en abiertos
-                    if ((*open_node)->g <= childG) {//es peor que lo que tenemos
-                        delete childNode->first; //olvida el nuevo
-                    } else {//es mejor que lo que tenemos
-                        Node* aux = *open_node; //probablemente se podria hacer directamente el delete
-                        open.erase(open_node); //se saca el viejo, aqui seguramente se pierde un nodo
-                        delete aux;
-                        make_heap(open.begin(), open.end(), NodeCompare()); //se reordena el heap
-                        open.push_back(childNode->first); //se mete el nuevo
-                        push_heap(open.begin(), open.end(), NodeCompare()); //se reordena el heap
-                    }
-                } else if (closed_node != closed.end()) {//si se encontro en cerrados
-                    if ((*closed_node)->g <= childG) {//es peor que lo que teniamos
-                        delete childNode->first; //olvida el nuevo
-                    } else {//es mejor que lo que tenemos
-                        Node* aux = *closed_node; //probablemente se podria hacer directamente el delete
-                        closed.erase(closed_node); //se saca de cerrados, aqui seguramente se pierde un nodo
-                        delete aux;
-                        open.push_back(childNode->first); //se mete en abiertos
-                        push_heap(open.begin(), open.end(), NodeCompare()); //se reordena el heap
-                    }
-                } else {
+            } else if (closed_node != closed.end()) {//si se encontro en cerrados
+                if ((*closed_node)->g >= childG) {//es peor que lo que teniamos
+                    delete childNode->first; //olvida el nuevo
+                } else {//es mejor que lo que tenemos
+                    Node* aux = *closed_node; //probablemente se podria hacer directamente el delete
+                    closed.erase(closed_node); //se saca de cerrados, aqui seguramente se pierde un nodo
+                    delete aux;
                     open.push_back(childNode->first); //se mete en abiertos
                     push_heap(open.begin(), open.end(), NodeCompare()); //se reordena el heap
                 }
+            } else {
+                //cout << "0me meten en abiertos\n";
+                spawnedNodes++;
+                open.push_back(childNode->first); //se mete en abiertos
+                push_heap(open.begin(), open.end(), NodeCompare()); //se reordena el heap
             }
-            this->closed.push_back(currentNode);
         }
+        this->closed.push_back(currentNode);
+        //}
         return 1; //busqueda incompleta
     }
 
@@ -176,7 +219,7 @@ public:
         this->baseNode->parent = 0;
         this->baseNode->child = 0;
         this->baseNode->g = 0;
-        this->baseNode->h = 0; //<----------------algo hay que estimar, funcionCota()?
+        this->baseNode->h = node.heuristic(NULL);
         this->baseNode->f = this->baseNode->g + this->baseNode->h;
         this->open.push_back(this->baseNode);
         push_heap(this->open.begin(), this->open.end(), NodeCompare());
@@ -194,12 +237,6 @@ public:
     }
 
     void showSolution() {
-        Node *currentNode = currentSolution;
-        while (currentNode != goalNode) {
-            cout << currentNode->data->x << " " << currentNode->data->y << endl;
-            currentNode = currentNode->child;
-        }
-        cout << currentNode->data->x << " " << currentNode->data->y << endl;
     }
 
     list<T*> solution() {
@@ -218,14 +255,27 @@ public:
         return steps;
     }
 
-private:
+    int getCurrentMaxScore() const {
+        return currentMaxScore;
+    }
+
+    void setCurrentMaxScore(int currentMaxScore) {
+        this->currentMaxScore = currentMaxScore;
+    }
+
+    int getSpawnedNodes() const {
+        return spawnedNodes;
+    }
+
+protected:
     vector<Node*> open;
     vector<Node*> closed;
-    vector<Node*> garbage;
     Node *currentSolution;
     Node *baseNode;
     Node *goalNode;
     int steps;
+    int currentMaxScore;
+    int spawnedNodes;
 
 };
 

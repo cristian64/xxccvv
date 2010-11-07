@@ -77,7 +77,7 @@ bool Board::operator==(const Board& o) const {
         return false;
     }
 
-    if (memcmp(this->board, o.board, *this->rows * (* this->columns) * sizeof (int) != 0)) {
+    if (memcmp(this->board, o.board, *this->rows * (* this->columns) * sizeof (int)) != 0) {
         return false;
     }
     return true;
@@ -252,13 +252,6 @@ std::set<std::pair<int, int> > Board::getGroupMove(int x, int y) const {
             }
         }
     }
-    /*
-        cout << "------------------------\n";
-        set<pair<int, int> >::iterator it;
-        for (it = connected.begin(); it != connected.end(); it++) {
-            cout << "ELEMENTO " << it->first << " " << it->second << endl;
-        }
-     */
     // si hay solo un elemento en la lista de vecinos es que es una casilla aislada
     // o esta vacia
     if (connected.size() < 2) {
@@ -291,7 +284,7 @@ int Board::removeGroup(std::set<std::pair<int, int> > tiles) {
     return tiles.size()*(tiles.size() - 1);
 }
 
-int Board::funcionCota() const {
+int Board::optimisticBound() const {
     int valorCota = 0;
     int total = *(this->rows) * *(this->columns);
     int ocurrencias[*this->colors];
@@ -316,7 +309,7 @@ int Board::funcionCota() const {
 
 // Realiza una estimación optimista del valor del tablero en el mejor caso.
 
-int Board::funcionCotaEntropia() const {
+int Board::EntropyBound() const {
     //int valorCota = 0;
     int total = *(this->rows) * (*this->columns);
     int ocurrencias[*this->colors + 1];
@@ -363,7 +356,6 @@ void Board::showMoves(std::list<std::set<std::pair<int, int> > > lista) {
 void Board::showMove(set<std::pair<int, int> > move) {
     set<pair<int, int> >::iterator it2;
     for (it2 = move.begin(); it2 != move.end(); it2++) {
-
         cout << "(" << it2->first << ", " << it2->second << "), ";
     }
 }
@@ -371,22 +363,12 @@ void Board::showMove(set<std::pair<int, int> > move) {
 void Board::show() const {
     for (int i = 0; i< *this->rows; i++) {
         for (int j = 0; j< *this->columns; j++) {
-
             std::cout << this->board[i * * this->columns + j] << ' ';
         }
         std::cout << std::endl;
     }
 }
 
-list<Board*> Board::childList() const {
-    list<Board*> boards;
-    Board* board;
-    list<set<std::pair<int, int> > > groupMoves = this->getGroupMoves();
-    list<set<std::pair<int, int> > >::iterator it;
-    for (it = groupMoves.begin(); it != groupMoves.end(); it++) {
-        board = new Board(*this);
-        board->removeGroup(*it);
-        boards.push_back(board);
-    }
-    return boards;
+int Board::heuristic(Board* o) const {
+    return this->optimisticBound();
 }

@@ -98,7 +98,7 @@ void Algorithms::bound(Board &board) {
             currentScore += groupScore;
             //bound(temp, currentMoves, currentScore);
 
-            if (temp.funcionCota() + currentScore > Algorithms::maxScore) {
+            if (temp.optimisticBound() + currentScore > Algorithms::maxScore) {
                 bound(temp);
             } else {
                 cantidadPodas++;

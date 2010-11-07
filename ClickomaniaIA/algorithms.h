@@ -25,7 +25,7 @@ using namespace std;
 struct boardCompare {
 
     bool operator() (const Board& lhs, const Board & rhs) const {
-        return lhs.funcionCota() < rhs.funcionCota();
+        return lhs.heuristic(NULL) < rhs.heuristic(NULL);
     }
 };
 
