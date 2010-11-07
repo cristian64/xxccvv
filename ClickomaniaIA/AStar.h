@@ -219,7 +219,7 @@ public:
         this->baseNode->parent = 0;
         this->baseNode->child = 0;
         this->baseNode->g = 0;
-        this->baseNode->h = node.heuristic(NULL);
+        this->baseNode->h = node.heuristic(this->goalNode->data);
         this->baseNode->f = this->baseNode->g + this->baseNode->h;
         this->open.push_back(this->baseNode);
         push_heap(this->open.begin(), this->open.end(), NodeCompare());
