@@ -25,6 +25,7 @@ public:
     int heuristic(BoardNode *goal) const;
     int x; //movimiento que ha llevado al tablero actual
     int y;
+    int g; //vamos a ver si hay alguna sucesion de putuaciones mal
 protected:
 
 

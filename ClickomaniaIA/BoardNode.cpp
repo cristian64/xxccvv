@@ -23,6 +23,7 @@ BoardNode::BoardNode(const BoardNode& orig) : Board(orig) {
 BoardNode::BoardNode(const std::string path) : Board(path) {
     x = -1;
     y = -1;
+    g = 0;
 }
 
 BoardNode::~BoardNode() {
@@ -35,6 +36,7 @@ list<pair <BoardNode*, int> > BoardNode::childList() const {
     list<set<pair<int, int> > >::iterator it;
     for (it = groupMoves.begin(); it != groupMoves.end(); it++) {
         board = new BoardNode(*this);
+        board->g = board->score(*it);
         board->removeGroup(*it);
         board->x = this->getMove(*it).first;
         board->y = this->getMove(*it).second;

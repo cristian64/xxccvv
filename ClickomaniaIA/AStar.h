@@ -100,8 +100,9 @@ public:
 
         //comprueba si estamos en un tablero terminal
         if (childObjects.size() == 0) {
+            cout << "TERMINAL\n";
             //comprueba si la puntuacion es maxima
-            if (currentNode->g > currentMaxScore) {
+            if (currentNode->g >= currentMaxScore) {
                 currentMaxScore = currentNode->g;
                 Node *aux = currentNode;
                 //muestra la partida
@@ -128,11 +129,11 @@ public:
                 currentMaxScore = aux->g;
             }
 
-            if (aux->f > currentMaxScore) {
+            if (aux->f >= currentMaxScore) {
                 childNodes.push_back(aux);
-                cout << "nodo   bueno, (" << aux->g << ", " << aux->h << ") " << aux->f << " > " << currentMaxScore << endl;
+                //cout << "nodo   bueno, (" << aux->g << ", " << aux->h << ") " << aux->f << " > " << currentMaxScore << endl;
             } else {
-                cout << "nodo brozoso, (" << aux->g << ", " << aux->h << ") " << aux->f << " < " << currentMaxScore << endl;
+                //cout << "nodo brozoso, (" << aux->g << ", " << aux->h << ") " << aux->f << " < " << currentMaxScore << endl;
                 delete aux;
             }
 
@@ -172,6 +173,7 @@ public:
             }
         }
         //==26630== All heap blocks were freed -- no leaks are possible
+
         return 1; //busqueda incompleta
     }
 
