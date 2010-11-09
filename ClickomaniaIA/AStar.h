@@ -104,30 +104,35 @@ public:
 
             return 0; //OBJETIVO  ENCONTRADO
         } else {*/
-        typename multiset<Node*>::iterator open_node;
-        typename multiset<Node*>::iterator closed_node;
-        //typename vector<Node*>::iterator closed_node; //it sobre cerrados
-        //typename vector<Node*>::iterator open_node; //it sobre abiertos
+        typename multiset<Node*>::iterator open_node;//it sobre abiertos
+        typename multiset<Node*>::iterator closed_node;//it sobre cerrados
+
         typename list<pair<Node*, int> >::iterator childNode; //it nodos tipo A* y el coste del paso
         typename list<pair<T*, int> >::iterator childObject; //it Nodos tipo T y el coste del paso
         list<pair<Node*, int> > childNodes; //lista de vecinos en nodos A*
 
         //pide los vecinos del nodo y el coste de transicion
-        list<pair<T*, int> > childs = currentNode->data->childList();
+
         //cout << "CHILDSIZE: " << childs.size() << endl;
         //añadido para clickomania
         //-----------------------------------------------------------------
+        //actualiza el maximo si lo que acaba de encontrar es lo mejor que hemos encontrado
         if (currentNode->g > this->currentMaxScore) {
             this->goalNode = currentNode;
             currentMaxScore = currentNode->g;
             cout << "MAX puntuacion intermedia: " << currentMaxScore << endl;
         }
 
+        //si la f que tiene  el nodo actual es peor
+        //que lo mejor que ha encontrado hasta
+        //el momento se descarta
         if (currentNode->f < currentMaxScore) {
             closed.insert(currentNode);
-            //closed.push_back(currentNode);
             return 1;
         }
+
+        //genera los hijos del nodo actual
+        list<pair<T*, int> > childs = currentNode->data->childList();
 
         if (childs.size() == 0) {//hemos llegado a una solucion
             cout << "\nSOLUCION CON G: " << currentNode->g << endl;
@@ -147,16 +152,14 @@ public:
         //envuelve los nodos del problema en nodos de A*
         for (childObject = childs.begin(); childObject != childs.end(); childObject++) {
             Node* aux = new Node;
-            aux->data = childObject->first; //iguala punteros
-            childNodes.push_back(pair<Node*, int>(aux, childObject->second));
-
+            aux->data = childObject->first; //iguala punteros, guarda el objeto en el nodo
+            childNodes.push_back(pair<Node*, int>(aux, childObject->second));//mete el obj
         }
-        bool open_found = false;
-        bool closed_found = false;
+
+        bool open_found = false;//indica si el  hijo se ha encontrado en abiertos
+        bool closed_found = false;//indica si el  hijo se ha encontrado en cerrados
         //para cada hijo
         for (childNode = childNodes.begin(); childNode != childNodes.end(); childNode++) {
-            //float childG = currentNode->g + childNode->second;
-            //float childH = childNode->first->data->heuristic(this->goalNode->data);
             childNode->first->g = currentNode->g + childNode->second;
             childNode->first->h = childNode->first->data->heuristic(this->goalNode->data);
             childNode->first->f = childNode->first->g + childNode->first->h;
@@ -171,6 +174,7 @@ public:
             for (open_node = it2.first; open_node != it2.second; open_node++) {
                 //break;
                 if (*((*open_node)->data) == *(childNode->first->data)) {
+                    //cout << "TABLEROS IGUALES\n";
                     if (childNode->first->f > (*open_node)->f) {
                         cout << "UNO MEJOR\n";
                     }

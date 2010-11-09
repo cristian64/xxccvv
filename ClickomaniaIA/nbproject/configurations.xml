@@ -20,6 +20,7 @@
                    projectFiles="true"
                    kind="SOURCE_LOGICAL_FOLDER">
       <itemPath>Board.cpp</itemPath>
+      <itemPath>BoardNode.cpp</itemPath>
       <itemPath>algorithms.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
@@ -34,7 +35,6 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
-    <itemPath>BoardNode.cpp</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
