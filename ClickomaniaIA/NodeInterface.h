@@ -12,8 +12,6 @@
 
 template <class T> class NodeInterface {
 public:
-    //virtual NodeInterface(){};
-    //virtual NodeInterface(const NodeInterface& orig){};
 
     virtual ~NodeInterface() {
     };

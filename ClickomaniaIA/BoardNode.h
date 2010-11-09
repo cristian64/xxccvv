@@ -20,13 +20,13 @@ public:
     BoardNode(const std::string path);
     virtual ~BoardNode();
     std::list<std::pair <BoardNode*, int> >childList() const;
-    BoardNode& operator=(const BoardNode &o);
+    BoardNode & operator=(const BoardNode &o);
     bool operator==(const BoardNode &o) const;
     int heuristic(BoardNode *goal) const;
     int x; //movimiento que ha llevado al tablero actual
     int y;
 protected:
-    
+
 
 };
 

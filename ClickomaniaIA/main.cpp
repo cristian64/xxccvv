@@ -162,7 +162,7 @@ int main(int argc, char** argv) {
                 cout << astar.getSpawnedNodes() << endl;
                 break;
             default:
-                
+
                 break;
         }
     }

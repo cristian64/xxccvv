@@ -167,27 +167,6 @@ void Board::gravity() {
             }
         }
     }
-    /*
-        //lateral
-        for (int j = *this->columns - 2; j >= 0; j--) {
-            if (this->getPosition(j, 0) != 0) { // si la actual tiene baldosas
-                int k = j - 1;
-                if (k >= 0) { // si la anterior no se sale del tablero
-                    if (this->getPosition(k, 0) == 0) { // si la anterior esta vacia
-                        for (int col = k; col< *this->columns - 1; col++) {//copia
-                            for (int i = 0; i<*this->rows; i++) {
-                                this->setPosition(col, i, this->getPosition(col + 1, i));
-                            }
-                        }
-                        //por el lateral entran ceros
-                        for (int i = 0; i<*this->rows; i++) {
-                            this->setPosition(*this->columns - 1, i, 0);
-                        }
-                    }
-                }
-            }
-        }
-     */
 }
 
 list<set<std::pair<int, int> > > Board::getGroupMoves() const {
@@ -300,8 +279,6 @@ int Board::optimisticBound() const {
 
 
     for (int i = 0; i< *this->colors; i++) {
-
-
         valorCota += ocurrencias[i]*(ocurrencias[i] - 1);
     }
     return valorCota;
@@ -336,9 +313,6 @@ int Board::EntropyBound() const {
 
     double entropiaNormalizada = entropia / log(*this->colors + 1);
     //entropiaNormalizada = entropiaNormalizada;
-    //cout << entropiaNormalizada << endl;
-    //cout << puntosMaximos << endl;
-    //cout << lrint(puntosMaximos * entropiaNormalizada) << endl;
     return lrint(puntosMaximos * entropiaNormalizada);
 }
 

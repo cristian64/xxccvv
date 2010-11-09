@@ -56,11 +56,11 @@ public:
         baseNode = new Node;
         goalNode = new Node;
         steps = 0;
+        currentMaxScore = 0;
         spawnedNodes = 0;
     }
 
     virtual ~AStar() {
-        //typename vector<Node*>::iterator it;
         typename multiset<Node*>::iterator it;
         for (it = this->open.begin(); it != this->open.end(); it++) {
             delete *(it);
@@ -68,157 +68,110 @@ public:
         for (it = this->closed.begin(); it != this->closed.end(); it++) {
             delete *(it);
         }
-        //delete goalNode;
+        delete goalNode;
     }
 
     int step() {
-        if (this->open.empty()) {
+        if (open.empty()) {
             cout << "NODOS ACABADOS\n";
             return -1; //ESPACIO EXPLORADO SIN EXITO;
         }
 
-        this->steps++;
+        Node *currentNode = (*open.begin());
+        open.erase(open.begin());
+        closed.insert(currentNode);
 
-        //Node *currentNode = this->open.front(); //nodo actual
-        //pop_heap(this->open.begin(), this->open.end(), NodeCompare());
-        //this->open.pop_back(); //pop_heap se lleva el primero al final
 
-        Node *currentNode = (*this->open.begin());
-        this->open.erase(this->open.begin());
-
-        /*if (*(currentNode->data) == *(this->goalNode->data)) {
-            this->goalNode->parent = currentNode->parent;
-            Node *parentNode = this->goalNode->parent;
-            Node *childNode = this->goalNode;
-
-            do {
-                parentNode->child = childNode;
-                childNode = parentNode;
-                parentNode = parentNode->parent;
-            } while (this->baseNode != childNode);
-
-            this->currentSolution = this->baseNode;
-
-            //se añade el nodo final a closed, mas que nada para liberarlo con los demas
-            this->closed.push_back(currentNode);
-
-            return 0; //OBJETIVO  ENCONTRADO
-        } else {*/
-        typename multiset<Node*>::iterator open_node;//it sobre abiertos
-        typename multiset<Node*>::iterator closed_node;//it sobre cerrados
-
-        typename list<pair<Node*, int> >::iterator childNode; //it nodos tipo A* y el coste del paso
+        typename multiset<Node*>::iterator open_node; //it sobre abiertos
+        typename multiset<Node*>::iterator closed_node; //it sobre cerrados
         typename list<pair<T*, int> >::iterator childObject; //it Nodos tipo T y el coste del paso
-        list<pair<Node*, int> > childNodes; //lista de vecinos en nodos A*
+        typename list<Node*>::iterator childNode; //it nodos tipo A* y el coste del paso
+        //iteradores que indican los limites de busqueda
+        pair<typename multiset<Node*>::iterator, typename multiset<Node*>::iterator > open_node_search_it;
+        pair<typename multiset<Node*>::iterator, typename multiset<Node*>::iterator > closed_node_search_it;
 
-        //pide los vecinos del nodo y el coste de transicion
+        list<pair<T*, int> > childObjects; //hijos del nodo actual
+        list<Node*> childNodes; //lista de vecinos almacenada en nodos A*
+        bool open_found = false; //indica si el hijo se ha encontrado en abiertos
+        bool closed_found = false; //indica si el hijo se ha encontrado en cerrados
 
-        //cout << "CHILDSIZE: " << childs.size() << endl;
-        //añadido para clickomania
-        //-----------------------------------------------------------------
-        //actualiza el maximo si lo que acaba de encontrar es lo mejor que hemos encontrado
-        if (currentNode->g > this->currentMaxScore) {
-            this->goalNode = currentNode;
-            currentMaxScore = currentNode->g;
-            cout << "MAX puntuacion intermedia: " << currentMaxScore << endl;
-        }
+        //obtiene los hijos del nodo actual
+        childObjects = currentNode->data->childList();
 
-        //si la f que tiene  el nodo actual es peor
-        //que lo mejor que ha encontrado hasta
-        //el momento se descarta
-        if (currentNode->f < currentMaxScore) {
-            closed.insert(currentNode);
-            return 1;
-        }
-
-        //genera los hijos del nodo actual
-        list<pair<T*, int> > childs = currentNode->data->childList();
-
-        if (childs.size() == 0) {//hemos llegado a una solucion
-            cout << "\nSOLUCION CON G: " << currentNode->g << endl;
-            if (currentNode->g >= this->currentMaxScore) {
-                this->goalNode = currentNode;
+        //comprueba si estamos en un tablero terminal
+        if (childObjects.size() == 0) {
+            //comprueba si la puntuacion es maxima
+            if (currentNode->g > currentMaxScore) {
                 currentMaxScore = currentNode->g;
-                Node *aux = goalNode;
+                Node *aux = currentNode;
+                //muestra la partida
                 do {
                     cout << "(" << aux->data->x << "," << aux->data->y << ")";
                     aux = aux->parent;
                 } while (aux != baseNode);
-                cout << endl;
-                return -1;
+                cout << " " << currentNode->g << endl;
             }
-        }
-        //-----------------------------------------------------------------
-        //envuelve los nodos del problema en nodos de A*
-        for (childObject = childs.begin(); childObject != childs.end(); childObject++) {
-            Node* aux = new Node;
-            aux->data = childObject->first; //iguala punteros, guarda el objeto en el nodo
-            childNodes.push_back(pair<Node*, int>(aux, childObject->second));//mete el obj
+            return 1;
         }
 
-        bool open_found = false;//indica si el  hijo se ha encontrado en abiertos
-        bool closed_found = false;//indica si el  hijo se ha encontrado en cerrados
-        //para cada hijo
+        //envuelve los nodos tablero en nodos A*
+        for (childObject = childObjects.begin(); childObject != childObjects.end(); childObject++) {
+            Node *aux = new Node();
+            aux->parent = currentNode;
+            aux->g = currentNode->g + childObject->second;
+            aux->data = childObject->first;
+            aux->h = aux->data->heuristic(goalNode->data);
+            aux->f = aux->g + aux->h;
+
+            //evita añadir a open nodos malos
+            if (aux->g > currentMaxScore) {
+                currentMaxScore = aux->g;
+            }
+
+            if (aux->f > currentMaxScore) {
+                childNodes.push_back(aux);
+                cout << "nodo   bueno, (" << aux->g << ", " << aux->h << ") " << aux->f << " > " << currentMaxScore << endl;
+            } else {
+                cout << "nodo brozoso, (" << aux->g << ", " << aux->h << ") " << aux->f << " < " << currentMaxScore << endl;
+                delete aux;
+            }
+
+        }
+
         for (childNode = childNodes.begin(); childNode != childNodes.end(); childNode++) {
-            childNode->first->g = currentNode->g + childNode->second;
-            childNode->first->h = childNode->first->data->heuristic(this->goalNode->data);
-            childNode->first->f = childNode->first->g + childNode->first->h;
-            childNode->first->parent = currentNode;
-
-            //cout << this->open.count(childNode->first) << endl;
-            //se busca en abiertos
-
-            pair<typename multiset<Node*>::iterator, typename multiset<Node*>::iterator > it2;
-            it2 = this->open.equal_range((childNode->first));
-
-            for (open_node = it2.first; open_node != it2.second; open_node++) {
-                //break;
-                if (*((*open_node)->data) == *(childNode->first->data)) {
-                    //cout << "TABLEROS IGUALES\n";
-                    if (childNode->first->f > (*open_node)->f) {
-                        cout << "UNO MEJOR\n";
+            open_node_search_it = open.equal_range(*childNode);
+            closed_node_search_it = closed.equal_range(*childNode);
+            for (open_node = open_node_search_it.first; open_node != open_node_search_it.second; open_node++) {
+                if ((*(*childNode)->data) == (*(*open_node)->data)) {
+                    if ((*childNode)->g > (*open_node)->g) {
+                        cout << "ESTO NO OCURRIRA\n";
+                        delete (*open_node)->data;
+                        //se borra el mierdero de open
+                        //al final se insertara el bueno (actual)
+                        open.erase(open_node); 
+                    } else {
+                        // si el actual es peor, no hay que insertarlo, es
+                        //como si lo hubieramos encontrado
+                        open_found = true;
                     }
-                    if (childNode->first->g > (*open_node)->g) {
-                        cout << "G MEJOR QUE PIERDO\n";
-                    }
-                    if (childNode->first->h != (*open_node)->h) {
-                        cout << "DISTINTA H???\n";
-                    }
-                    //delete childNode->first;
-                    open_found = true;
-                    /*
-                    open_found = true;
-                    if ((*open_node)->f >= childNode->first->f) {
-                        delete childNode->first; //olvida el nuevo
-                    }else{
-                        cout << "IMPoSIBLE\n";
-                        this->open.erase(open_node);
-                        this->open.insert(childNode->first);
-                    }
-                     */
                     break;
                 }
             }
-            //open_found = false;
 
-            /*
-            if (!open_found) {
-                it2 = this->closed.equal_range(childNode->first);
-                for (closed_node = it2.first; closed_node != it2.second; closed_node++) {
-                    if (*((*closed_node)->data) == *(childNode->first->data)) {
-                        delete childNode->first; //olvida el nuevo
-                        closed_found = true;
-                        break;
-                    }
+            for (closed_node = closed_node_search_it.first; closed_node != closed_node_search_it.second; closed_node++) {
+                if ((*(*childNode)->data) == (*(*closed_node)->data)) {
+                    closed_found = true;
+                    break;
                 }
-            }*/
-
-            if (!open_found && !closed_found) {
-                spawnedNodes++;
-                open.insert(childNode->first);
+            }
+            //si no fue generado anteoriormente se guarda como candidato
+            if (!closed_found && !open_found) {
+                open.insert(*childNode);
+            } else {//si ya se genero, se borra
+                delete *childNode;
             }
         }
-        this->closed.insert(currentNode);
+        //==26630== All heap blocks were freed -- no leaks are possible
         return 1; //busqueda incompleta
     }
 
@@ -227,12 +180,14 @@ public:
         //que mida el tiempo.
         int status = 1;
         while (status == 1) {//forma clasica, busca objetivos
+
             status = this->step();
         }
         return status;
     }
 
     void setBaseNode(T node) {
+
         this->baseNode->data = new T;
         *this->baseNode->data = node;
         this->baseNode->parent = 0;
@@ -247,6 +202,7 @@ public:
     }
 
     void setGoalNode(T node) {
+
         this->goalNode->data = new T;
         *this->goalNode->data = node;
         this->goalNode->parent = 0;
@@ -272,14 +228,17 @@ public:
     }
 
     int getSteps() {
+
         return steps;
     }
 
     int getCurrentMaxScore() const {
+
         return currentMaxScore;
     }
 
     void setCurrentMaxScore(int currentMaxScore) {
+
         this->currentMaxScore = currentMaxScore;
     }
 
@@ -288,10 +247,8 @@ public:
     }
 
 protected:
-    //vector<Node*> open;
     multiset<Node*, OpenNodeCompare> open;
     multiset<Node*, ClosedNodeCompare> closed;
-    //vector<Node*> closed;
     Node *currentSolution;
     Node *baseNode;
     Node *goalNode;
