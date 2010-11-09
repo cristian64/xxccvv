@@ -136,7 +136,7 @@ public:
                 currentMaxScore = currentNode->g;
                 Node *aux = goalNode;
                 do {
-                    cout << "(" << aux->data->x << ", " << aux->data->y << ")";
+                    cout << "(" << aux->data->x << "," << aux->data->y << ")";
                     aux = aux->parent;
                 } while (aux != baseNode);
                 cout << endl;
@@ -155,48 +155,66 @@ public:
         bool closed_found = false;
         //para cada hijo
         for (childNode = childNodes.begin(); childNode != childNodes.end(); childNode++) {
-            float childG = currentNode->g + childNode->second;
-            float childH = childNode->first->data->heuristic(this->goalNode->data);
-            //float childH = childNode->first->data->entropy
-            childNode->first->g = childG;
-            childNode->first->h = childH;
+            //float childG = currentNode->g + childNode->second;
+            //float childH = childNode->first->data->heuristic(this->goalNode->data);
+            childNode->first->g = currentNode->g + childNode->second;
+            childNode->first->h = childNode->first->data->heuristic(this->goalNode->data);
             childNode->first->f = childNode->first->g + childNode->first->h;
             childNode->first->parent = currentNode;
 
+            //cout << this->open.count(childNode->first) << endl;
             //se busca en abiertos
+
             pair<typename multiset<Node*>::iterator, typename multiset<Node*>::iterator > it2;
             it2 = this->open.equal_range((childNode->first));
 
             for (open_node = it2.first; open_node != it2.second; open_node++) {
+                //break;
                 if (*((*open_node)->data) == *(childNode->first->data)) {
-                    //open_found = true;
+                    if (childNode->first->f > (*open_node)->f) {
+                        cout << "UNO MEJOR\n";
+                    }
+                    if (childNode->first->g > (*open_node)->g) {
+                        cout << "G MEJOR QUE PIERDO\n";
+                    }
+                    if (childNode->first->h != (*open_node)->h) {
+                        cout << "DISTINTA H???\n";
+                    }
+                    //delete childNode->first;
+                    open_found = true;
+                    /*
+                    open_found = true;
+                    if ((*open_node)->f >= childNode->first->f) {
+                        delete childNode->first; //olvida el nuevo
+                    }else{
+                        cout << "IMPoSIBLE\n";
+                        this->open.erase(open_node);
+                        this->open.insert(childNode->first);
+                    }
+                     */
                     break;
                 }
             }
+            //open_found = false;
 
-            it2 = this->closed.equal_range(childNode->first);
-            for (closed_node = it2.first; closed_node != it2.second; closed_node++) {
-                if (*((*closed_node)->data) == *(childNode->first->data)) {
-                    //closed_found = true;
-                    break;
+            /*
+            if (!open_found) {
+                it2 = this->closed.equal_range(childNode->first);
+                for (closed_node = it2.first; closed_node != it2.second; closed_node++) {
+                    if (*((*closed_node)->data) == *(childNode->first->data)) {
+                        delete childNode->first; //olvida el nuevo
+                        closed_found = true;
+                        break;
+                    }
                 }
-            }
+            }*/
 
-
-            //cout << "MI PADRE ES:\n";
-            //childNode->first->parent->data->show();
-
-            if (open_found) {
-                delete childNode->first; //olvida el nuevo
-            } else if (closed_found) {
-                delete childNode->first; //olvida el nuevo
-            } else {
+            if (!open_found && !closed_found) {
                 spawnedNodes++;
                 open.insert(childNode->first);
             }
         }
         this->closed.insert(currentNode);
-        //}
         return 1; //busqueda incompleta
     }
 
