@@ -88,7 +88,7 @@ int backtrackingProgresivo(Board &board) {
         Algorithms::currentMoves = Algorithms::maxMoves;
         Algorithms::currentScore = Algorithms::maxScore;
         profundidad += 3;
-        Algorithms::backtrackingLimitado(board, 4, board2);
+        Algorithms::backtrackingLimitado(board, 8, board2);
 
         maxMoves.insert(maxMoves.end(), Algorithms::maxMoves.begin(), Algorithms::maxMoves.end());
         maxScore += Algorithms::maxScore;
@@ -156,7 +156,7 @@ int main(int argc, char** argv) {
                 backtrackingProgresivo(board);
                 break;
             case 4:
-                astar.setCurrentMaxScore(backtrackingProgresivo(board));
+                //astar.setCurrentMaxScore(backtrackingProgresivo(board));
                 astar.run();
                 //astar.step();
                 cout << astar.getSpawnedNodes() << endl;

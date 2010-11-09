@@ -74,5 +74,5 @@ bool BoardNode::operator==(const BoardNode &o)const {
 }
 
 int BoardNode::heuristic(BoardNode* o) const {
-    return this->Board::heuristic(NULL);
+    return this->Board::optimisticBound() ;
 }
