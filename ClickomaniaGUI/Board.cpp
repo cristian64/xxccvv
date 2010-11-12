@@ -170,30 +170,7 @@ void Board::gravity() {
 }
 
 list<set<std::pair<int, int> > > Board::getGroupMoves() const {
-    int elements = *this->rows * * this->columns;
-    bool *usedTiles = new bool [elements]; //marca que baldosas ya pertenecen a algun grupo
-    memset(usedTiles, false, sizeof (false) * elements);
-    list<set<std::pair<int, int> > > moves;
-    for (int i = 0; i<*this->rows; i++) {//para cada baldosa
-        for (int j = 0; j<*this->columns; j++) {
-            if (!usedTiles[i * (*this->columns) + j] && this->getPosition(j, i) != 0) {//si no esta en uso y no esta vacia
-                set<pair<int, int> > actualGroup;
-                usedTiles[i * (*this->columns) + j] = true; //Se marca como usada
-                actualGroup = this->getGroupMove(j, i); //preguntamos si esta en algun grupo
-                if (actualGroup.size() > 0) { //si hay un grupo ahi
-                    moves.push_back(actualGroup); //se añade a la lista de grupso
-                    set<std::pair<int, int> >::iterator it;
-                    for (it = moves.back().begin(); it != moves.back().end(); it++) {
-                        usedTiles[it->second * (*this->columns) + it->first] = true; //y se marcan todos sus integrantes como usados
-                    }
-                }
-            }
-        }
-    }
-
-    delete [] usedTiles;
-    return moves;
-
+	return getGrupos();
 }
 
 pair<int, int> Board::getMove(std::set<std::pair<int, int> > groupMove) const {
@@ -201,42 +178,7 @@ pair<int, int> Board::getMove(std::set<std::pair<int, int> > groupMove) const {
 }
 
 std::set<std::pair<int, int> > Board::getGroupMove(int x, int y) const {
-    std::list<std::pair<int, int> > open; //nodos candidatos
-    std::set<std::pair<int, int> > closed; //nodos procesados
-    set<std::pair<int, int> > connected; //grupo de vecinos
-    pair<int, int> actualTile; //
-    open.push_back(pair<int, int>(x, y)); //mete la baldosa pedida en abiertos
-    int xDir[] = {0, 0, -1, 1}; //4-vecindad cutre, algo pro estaria al pelo
-    int yDir[] = {1, -1, 0, 0};
-    int actualX, actualY;
-    if (this->getPosition(x, y) != 0) {//si la baldosa no esta vacia
-        while (!open.empty()) {//n //mientras haya candidatos
-            actualTile = open.front(); //coge el primero
-            open.pop_front(); //quitalo de abiertos
-            closed.insert(actualTile); //log//metelo en cerrados
-            connected.insert(actualTile); //log añadelo a la lista de vecinos
-            for (int dir = 0; dir < 4; dir++) {// 4 /para cada vecino
-                actualX = actualTile.first + xDir[dir];
-                actualY = actualTile.second + yDir[dir];
-                if (actualX >= 0 && actualX < *this->columns) {//si no se salen del tablero
-                    if (actualY >= 0 && actualY < *this->rows) {
-                        if (this->getPosition(actualX, actualY) == this->getPosition(x, y)) {//si tienen el mismo color
-                            pair<int, int> actual(actualX, actualY);
-                            if (closed.count(actual) == 0) { //log // si no ha sido procesado
-                                open.insert(open.end(), actual); //log // se mete en abiertos
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    // si hay solo un elemento en la lista de vecinos es que es una casilla aislada
-    // o esta vacia
-    if (connected.size() < 2) {
-        connected.clear();
-    }
-    return connected;
+	return getGrupo(y, x);
 }
 
 /*
