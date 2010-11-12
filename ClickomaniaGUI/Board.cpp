@@ -77,7 +77,7 @@ bool Board::operator==(const Board& o) const {
         return false;
     }
 
-    if (memcmp(this->board, o.board, *this->rows * (* this->columns) * sizeof (int) != 0)) {
+    if (memcmp(this->board, o.board, *this->rows * (* this->columns) * sizeof (int)) != 0) {
         return false;
     }
     return true;
@@ -167,27 +167,6 @@ void Board::gravity() {
             }
         }
     }
-    /*
-        //lateral
-        for (int j = *this->columns - 2; j >= 0; j--) {
-            if (this->getPosition(j, 0) != 0) { // si la actual tiene baldosas
-                int k = j - 1;
-                if (k >= 0) { // si la anterior no se sale del tablero
-                    if (this->getPosition(k, 0) == 0) { // si la anterior esta vacia
-                        for (int col = k; col< *this->columns - 1; col++) {//copia
-                            for (int i = 0; i<*this->rows; i++) {
-                                this->setPosition(col, i, this->getPosition(col + 1, i));
-                            }
-                        }
-                        //por el lateral entran ceros
-                        for (int i = 0; i<*this->rows; i++) {
-                            this->setPosition(*this->columns - 1, i, 0);
-                        }
-                    }
-                }
-            }
-        }
-     */
 }
 
 list<set<std::pair<int, int> > > Board::getGroupMoves() const {
@@ -252,13 +231,6 @@ std::set<std::pair<int, int> > Board::getGroupMove(int x, int y) const {
             }
         }
     }
-    /*
-        cout << "------------------------\n";
-        set<pair<int, int> >::iterator it;
-        for (it = connected.begin(); it != connected.end(); it++) {
-            cout << "ELEMENTO " << it->first << " " << it->second << endl;
-        }
-     */
     // si hay solo un elemento en la lista de vecinos es que es una casilla aislada
     // o esta vacia
     if (connected.size() < 2) {
@@ -291,7 +263,7 @@ int Board::removeGroup(std::set<std::pair<int, int> > tiles) {
     return tiles.size()*(tiles.size() - 1);
 }
 
-int Board::funcionCota() const {
+int Board::optimisticBound() const {
     int valorCota = 0;
     int total = *(this->rows) * *(this->columns);
     int ocurrencias[*this->colors];
@@ -307,8 +279,6 @@ int Board::funcionCota() const {
 
 
     for (int i = 0; i< *this->colors; i++) {
-
-
         valorCota += ocurrencias[i]*(ocurrencias[i] - 1);
     }
     return valorCota;
@@ -316,7 +286,7 @@ int Board::funcionCota() const {
 
 // Realiza una estimación optimista del valor del tablero en el mejor caso.
 
-int Board::funcionCotaEntropia() const {
+int Board::EntropyBound() const {
     //int valorCota = 0;
     int total = *(this->rows) * (*this->columns);
     int ocurrencias[*this->colors + 1];
@@ -343,9 +313,6 @@ int Board::funcionCotaEntropia() const {
 
     double entropiaNormalizada = entropia / log(*this->colors + 1);
     //entropiaNormalizada = entropiaNormalizada;
-    //cout << entropiaNormalizada << endl;
-    //cout << puntosMaximos << endl;
-    //cout << lrint(puntosMaximos * entropiaNormalizada) << endl;
     return lrint(puntosMaximos * entropiaNormalizada);
 }
 
@@ -363,7 +330,6 @@ void Board::showMoves(std::list<std::set<std::pair<int, int> > > lista) {
 void Board::showMove(set<std::pair<int, int> > move) {
     set<pair<int, int> >::iterator it2;
     for (it2 = move.begin(); it2 != move.end(); it2++) {
-
         cout << "(" << it2->first << ", " << it2->second << "), ";
     }
 }
@@ -371,10 +337,14 @@ void Board::showMove(set<std::pair<int, int> > move) {
 void Board::show() const {
     for (int i = 0; i< *this->rows; i++) {
         for (int j = 0; j< *this->columns; j++) {
-
             std::cout << this->board[i * * this->columns + j] << ' ';
         }
         std::cout << std::endl;
     }
 }
 
+int Board::heuristic(Board* o) const {
+	if (o != NULL)
+		cout << "";
+    return this->optimisticBound();
+}

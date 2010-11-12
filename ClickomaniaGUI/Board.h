@@ -37,7 +37,6 @@ public:
     int getPosition(int column, int row) const;
     int setPosition(int column, int row, int color);
 
-
     /*
      * aplica gravedad vertical y lateral
      */
@@ -71,16 +70,16 @@ public:
      * Se presupone que los grupos de baldosas del mismo color son adyacentes.
      * \return Devuelve un valor entero con la estimación optimista del tablero.
      */
-    int funcionCotaEntropia() const;
-    int funcionCota() const;
+    int EntropyBound() const;
+    int optimisticBound() const;
+    int heuristic(Board* o) const;
 
     //broza para mostrar por pantalla que deberia ser static
     static void showMoves(std::list<std::set<std::pair<int, int> > > lista);
     static void showMove(std::set<std::pair<int, int> > move);
     void show() const;
 
-
-
+    std::list<std::pair<Board*, int> > childList() const;
 
 private:
 

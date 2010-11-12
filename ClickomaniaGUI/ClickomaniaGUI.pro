@@ -8,6 +8,10 @@ DEPENDPATH += .
 INCLUDEPATH += .
 
 # Input
-HEADERS += Board.h mainwindow.h
-FORMS += mainwindow.ui
+HEADERS += Board.h mainwindow.h \
+	AEstrella.h \
+	NodoAEstrella.h \
+	SetAEstrella.h
+FORMS += mainwindow.ui \
+
 SOURCES += Board.cpp main.cpp mainwindow.cpp

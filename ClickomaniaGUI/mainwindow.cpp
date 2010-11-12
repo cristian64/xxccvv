@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "AEstrella.h"
 #include <QDir>
 #include <QFileInfoList>
 #include <sstream>
@@ -219,4 +220,18 @@ void MainWindow::on_tableWidget_cellEntered(int row, int column)
 			}
 		}
 	}
+}
+
+// Ejecuta el algoritmo AEstrella sobre el tablero Board y muestra los resultados por pantalla.
+void MainWindow::on_pushButton_3_clicked()
+{
+	int tiempo = time(NULL);
+	AEstrella aestrella;
+	pair<int, list<pair<int, int> > > resultado = aestrella.run(*board);
+	for (list<pair<int, int> >::iterator i = resultado.second.begin(); i != resultado.second.end(); i++)
+	{
+		cout << "(" << (*i).first << ", " << (*i).second << ") ";
+	}
+	cout << resultado.first << endl;
+	cout << (time(NULL) - tiempo) / 60 << "m " << (time(NULL) - tiempo) % 60 << "s" << endl;
 }

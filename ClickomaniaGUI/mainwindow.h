@@ -5,6 +5,7 @@
 #include <QListWidgetItem>
 #include <iostream>
 #include "Board.h"
+#include "AEstrella.h"
 
 using namespace std;
 
@@ -27,8 +28,9 @@ private:
 	void actualizarTabla();
 
 private slots:
-	void on_tableWidget_cellEntered(int row, int column);
- void on_listWidget_itemDoubleClicked(QListWidgetItem* item);
+	void on_pushButton_3_clicked();
+ void on_tableWidget_cellEntered(int row, int column);
+	void on_listWidget_itemDoubleClicked(QListWidgetItem* item);
 	void on_pushButton_2_clicked();
 	void on_pushButton_clicked();
 	void on_tableWidget_cellClicked(int row, int column);
