@@ -248,7 +248,8 @@ void MainWindow::on_pushButton_3_clicked()
 		flujo += QString::number(resultado.first);
 		ui->lineEdit->setText(flujo);
 
-		cout << ui->listWidget->selectedItems().at(0)->text().toStdString() << endl;
+		if (ui->listWidget->selectedItems().size() > 0)
+			cout << ui->listWidget->selectedItems().at(0)->text().toStdString() << endl;
 		cout << flujo.toStdString() << endl;
 		cout << tiempoStr.toStdString() << endl;
 		cout << "-----------------------------------------------------------" << endl;
