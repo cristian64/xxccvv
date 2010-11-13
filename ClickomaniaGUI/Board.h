@@ -27,7 +27,7 @@ public:
     int getRows() const;
     void setRows(int rows);
 
-    Board();
+	Board(int colores, int filas, int columnas);
     Board(const std::string path);
     Board(const Board& orig);
     virtual ~Board();
@@ -126,9 +126,11 @@ public:
 		int fila = celda / *columns;
 		int columna = celda % *columns;
 
+		// Introducimos la casilla actual al grupo y la marcamos.
 		grupo.insert(pair<int, int>(columna, fila));
 		mascara[celda] = 1;
 
+		// Comprobamos hacia dónde hay que inundar.
 		if (columna + 1 < *columns)
 		{
 			int izquierda = fila * *columns + (columna + 1);
@@ -182,6 +184,8 @@ public:
     static void showMoves(std::list<std::set<std::pair<int, int> > > lista);
     static void showMove(std::set<std::pair<int, int> > move);
     void show() const;
+
+	string toString() const;
 
     std::list<std::pair<Board*, int> > childList() const;
 

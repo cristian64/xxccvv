@@ -3,6 +3,9 @@
 #include "AEstrella.h"
 #include <QDir>
 #include <QFileInfoList>
+#include <QFileDialog>
+#include <QTextStream>
+
 #include <sstream>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -234,4 +237,50 @@ void MainWindow::on_pushButton_3_clicked()
 	}
 	cout << resultado.first << endl;
 	cout << (time(NULL) - tiempo) / 60 << "m " << (time(NULL) - tiempo) % 60 << "s" << endl;
+}
+
+// Se limpia el tablero.
+void MainWindow::on_pushButton_20_clicked()
+{
+	// Se limpia el tablero.
+	for(int i = 0; i < 20; i++)
+	{
+		for (int j = 0; j < 20; j++)
+		{
+			QColor color = intToColor(0);
+			ui->tableWidget->item(i, j)->setBackgroundColor(color);
+		}
+	}
+
+	// Se reinicia la puntuación.
+	ui->label_4->setText("0");
+	ui->label_5->setText("0");
+}
+
+// Guarda el tablero.
+void MainWindow::on_pushButton_21_clicked()
+{
+	if (board != NULL)
+	{
+		QString nombre = QFileDialog::getSaveFileName(0, "Guardando el tablero...", QString(), "*.txt");
+		if (nombre.length() > 0)
+		{
+			QFile fichero(nombre);
+			if (fichero.open(QFile::WriteOnly))
+			{
+				QTextStream flujo(&fichero);
+				flujo << QString::fromStdString(board->toString()) << endl; //TODO, guardar el tablero y no una mierdaca...
+				fichero.close();
+			}
+		}
+	}
+}
+
+// Genera un tablero aleatorio.
+void MainWindow::on_pushButton_7_clicked()
+{
+	if (board != NULL)
+		delete board;
+	board = new Board(ui->spinBox->value(), ui->spinBox_2->value(), ui->spinBox_3->value());
+	actualizarTabla();
 }

@@ -16,14 +16,19 @@
 #include <utility>
 #include <cmath>
 #include <cassert>
+#include <sstream>
+#include <stdlib.h>
 
 using namespace std;
 
-Board::Board() {
-    this->rows = new int;
-    this->columns = new int;
-    this->colors = new int;
-    this->board = NULL;
+Board::Board(int colores, int filas, int columnas) {
+	this->rows = new int(filas);
+	this->columns = new int(columnas);
+	this->colors = new int(colores);
+	this->board = new int[filas*columnas];
+
+	for (int i = 0; i < filas*columnas; i++)
+		board[i] = rand()%colores + 1;
 }
 
 Board::Board(const std::string path) {
@@ -289,4 +294,23 @@ int Board::heuristic(Board* o) const {
 	if (o != NULL)
 		cout << "";
     return this->optimisticBound();
+}
+
+string Board::toString() const {
+	stringstream flujo;
+	flujo << *rows;
+	flujo << endl;
+	flujo << *columns;
+	flujo << endl;
+	flujo << *colors;
+	flujo << endl;
+	for (int i = 0; i < (*rows); i++) {
+		for (int j = 0; j < (*columns); j++) {
+			flujo << this->getPosition(j, i);
+			flujo << " ";
+		}
+		flujo << endl;
+	}
+
+	return flujo.str();
 }

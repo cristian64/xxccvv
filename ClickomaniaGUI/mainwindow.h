@@ -28,8 +28,11 @@ private:
 	void actualizarTabla();
 
 private slots:
+	void on_pushButton_7_clicked();
+	void on_pushButton_21_clicked();
+	void on_pushButton_20_clicked();
 	void on_pushButton_3_clicked();
- void on_tableWidget_cellEntered(int row, int column);
+	void on_tableWidget_cellEntered(int row, int column);
 	void on_listWidget_itemDoubleClicked(QListWidgetItem* item);
 	void on_pushButton_2_clicked();
 	void on_pushButton_clicked();
