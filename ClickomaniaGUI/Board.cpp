@@ -25,6 +25,7 @@ Board::Board(int colores, int filas, int columnas) {
 	this->rows = new int(filas);
 	this->columns = new int(columnas);
 	this->colors = new int(colores);
+	total = restantes = *rows * *columns;
 	this->board = new int[filas*columnas];
 
 	for (int i = 0; i < filas*columnas; i++)
@@ -43,6 +44,7 @@ Board::Board(const std::string path) {
     is >> *this->rows;
     is >> *this->columns;
     is >> *this->colors;
+	total = restantes = *rows * *columns;
     int elements = *this->rows * * this->columns;
     this->board = new int [elements];
     for (int i = 0; i < elements; i++) {
@@ -57,6 +59,8 @@ Board::Board(const Board& orig) {
     *this->rows = *orig.rows;
     *this->columns = *orig.columns;
     *this->colors = *orig.colors;
+	total = orig.total;
+	restantes = orig.restantes;
     int elements = *this->rows * * this->columns;
     this->board = new int[elements];
     memcpy(this->board, orig.board, elements * sizeof (int));
@@ -70,6 +74,8 @@ Board& Board::operator=(const Board& orig) {
         *this->rows = *orig.rows;
         *this->columns = *orig.columns;
         *this->colors = *orig.colors;
+		total = orig.total;
+		restantes = orig.restantes;
         int elements = *this->rows * * this->columns;
         this->board = new int[elements];
         memcpy(this->board, orig.board, elements * sizeof (int));
@@ -78,9 +84,14 @@ Board& Board::operator=(const Board& orig) {
 }
 
 bool Board::operator==(const Board& o) const {
+	if (restantes != o.restantes)
+	{
+		return false;
+	}
+
     if (*this->rows != *o.rows || *this->columns != *o.columns || *this->colors != *o.colors) {
         return false;
-    }
+	}
 
     if (memcmp(this->board, o.board, *this->rows * (* this->columns) * sizeof (int)) != 0) {
         return false;
@@ -123,6 +134,16 @@ void Board::setRows(int rows) {
     *this->rows = rows;
 }
 
+int Board::getRestantes() const
+{
+	return restantes;
+}
+
+int Board::getTotal() const
+{
+	return total;
+}
+
 int Board::getPosition(int column, int row) const {
     return this->board[row * (*this->columns) + column];
 }
@@ -154,7 +175,8 @@ void Board::gravity() {
                 }
             }
         }
-    }
+	}
+
     for (int j = *this->columns - 1; j >= 0; j--) {
         if (this->getPosition(j, 0) != 0) { // si la actual tiene baldosas
             if (j - 1 >= 0) {//si la anterior no se sale del tablero
@@ -207,6 +229,7 @@ int Board::removeGroup(std::set<std::pair<int, int> > tiles) {
 
     }
     this->gravity();
+	restantes -= tiles.size();
     return tiles.size()*(tiles.size() - 1);
 }
 

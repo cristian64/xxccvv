@@ -246,6 +246,7 @@ void MainWindow::on_pushButton_3_clicked()
 	flujo += QString::number(resultado.first);
 	ui->lineEdit->setText(flujo);
 
+	cout << ui->listWidget->selectedItems().at(0)->text().toStdString() << endl;
 	cout << flujo.toStdString() << endl;
 	cout << tiempoStr.toStdString() << endl;
 	cout << "-----------------------------------------------------------" << endl;
@@ -295,4 +296,8 @@ void MainWindow::on_pushButton_7_clicked()
 		delete board;
 	board = new Board(ui->spinBox->value(), ui->spinBox_2->value(), ui->spinBox_3->value());
 	actualizarTabla();
+
+	// Se reinicia la puntuación.
+	ui->label_4->setText("0");
+	ui->label_5->setText("0");
 }

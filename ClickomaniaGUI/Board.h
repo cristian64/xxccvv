@@ -26,6 +26,8 @@ public:
     void setColumns(int columns);
     int getRows() const;
     void setRows(int rows);
+	int getRestantes() const;
+	int getTotal() const;
 
 	Board(int colores, int filas, int columnas);
     Board(const std::string path);
@@ -66,7 +68,6 @@ public:
 	list<set<pair<int, int> > > getGrupos() const
 	{
 		list<set<pair<int, int> > > movimientos;
-		int total = *rows * *columns;
 		int *mascara = new int[total];
 		memset(mascara, 0, sizeof(int) * total);
 
@@ -101,8 +102,8 @@ public:
 
 		if (board[fila * *columns + columna] != 0)
 		{
-			int *mascara = new int[*rows * *columns];
-			memset(mascara, 0, sizeof(int) * *rows * *columns);
+			int *mascara = new int[total];
+			memset(mascara, 0, sizeof(int) * total);
 
 			algoritmo(fila * *columns + columna, mascara, grupo);
 			if (grupo.size() < 2)
@@ -195,6 +196,8 @@ private:
     int *rows;
     int *columns;
     int *colors;
+	int total;
+	int restantes;
 
 };
 

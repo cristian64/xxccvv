@@ -1,5 +1,5 @@
-#ifndef SETAESTRELLA_H
-#define SETAESTRELLA_H
+#ifndef HEAPAESTRELLA_H
+#define HEAPAESTRELLA_H
 
 #include <algorithm>
 #include <iostream>
@@ -9,17 +9,16 @@
 
 using namespace std;
 
-class SetAEstrella
+
+
+class HeapAEstrella
 {
 private:
 
 	/**
 	 * @brief Clase auxiliar que representa el comparador que requiere std::set<T, Comparator>.
 	 * El comparador utiliza determinados atributos de los nodos para poder ordenarlos y acceder
-	 * a ellos rápidamente.
-	 * No importa qué criterio se sigan porque esta clase (la clase que utiliza el comparador) sólo
-	 * es un conjunto de nodos. Es decir, no interesa el orden, sólo saber si un nodo está o no en el conjunto.
-	 * Antes de comparar el tablero se utilizan otros atributos más ligeros.
+	 * a ellos ordenadamente y rápidamente.
 	*/
 	class Comparador
 	{
@@ -29,13 +28,10 @@ private:
 			{
 				bool comparacion = false;
 
-				// Internamente, set<...> ordenará el conjunto según H, luego "restantes" y finalmente el propio tablero en sí.
-				// Pero podría ser cualquier otro criterio, porque sólo se utiliza esta clase como conjunto matemático sin orden.
-				// De hecho, los métodos que se proporcionan no permiten extraer el máximo o el mínimo como sí haría un heap o
-				// cola de prioridad.
-				if (n1->getH() > n2->getH())
+				// Internamente, set<...> ordenará el conjunto según F, luego "restantes" y finalmente el propio tablero en sí.
+				if (n1->getF() > n2->getF())
 					comparacion = true;
-				else if (n1->getH() < n2->getH())
+				else if (n1->getF() < n2->getF())
 					comparacion = false;
 				else if (n1->getBoard()->getRestantes() > n2->getBoard()->getRestantes())
 					comparacion = true;
@@ -70,7 +66,7 @@ public:
 	 * @brief Destructor. Libera la memoria de cada nodo que todavía esté introducido en la lista.
 	 *
 	*/
-	~SetAEstrella()
+	~HeapAEstrella()
 	{
 		for (set<NodoAEstrella*, Comparador>::iterator i = lista.begin(); i != lista.end(); i++)
 			delete *i;
@@ -103,6 +99,56 @@ public:
 	}
 
 	/**
+	 * @brief Elimina el elemento y devuelve la referencia.
+	 *
+	 * @return Devuelve una referencia al elemento del conjunto.
+	*/
+	NodoAEstrella* pop()
+	{
+		set<NodoAEstrella*, Comparador>::iterator i = lista.begin();
+		if (i == lista.end())
+			return NULL;
+		else
+		{
+			NodoAEstrella* cima = *i;
+			lista.erase(i);
+			return cima;
+		}
+	}
+
+	/**
+	 * @brief Obtiene una referencia al primer elemento de la lista pero sin eliminar el elemento.
+	 *
+	 * @return Devuelve una referencia al primer elemento de la lista.
+	*/
+	const NodoAEstrella* top() const
+	{
+		set<NodoAEstrella*, Comparador>::iterator i = lista.begin();
+		if (i == lista.end())
+			return NULL;
+		else
+			return *i;
+	}
+
+	/**
+	 * @brief Esa referencia será eliminada de la lista.	 *
+	 *
+	 * @param nodo Nodo que se va a comprobar si ya está en la lista para eliminarlo.
+	*/
+	void remove(NodoAEstrella *nodo)
+	{
+		lista.erase(nodo);
+	}
+
+	/**
+	 * @return Devuelve verdadero si la lista está vacía.
+	*/
+	bool empty() const
+	{
+		return lista.empty();
+	}
+
+	/**
 	 * @return Devuelve la cantidad de elementos de la lista.
 	*/
 	int size() const
@@ -111,4 +157,4 @@ public:
 	}
 };
 
-#endif // SETAESTRELLA_H
+#endif // HEAPAESTRELLA_H

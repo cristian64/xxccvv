@@ -11,7 +11,8 @@ INCLUDEPATH += .
 HEADERS += Board.h mainwindow.h \
 	AEstrella.h \
 	NodoAEstrella.h \
-	SetAEstrella.h
+	SetAEstrella.h \
+	HeapAEstrella.h
 FORMS += mainwindow.ui \
 
 SOURCES += Board.cpp main.cpp mainwindow.cpp
