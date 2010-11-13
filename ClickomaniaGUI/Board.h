@@ -100,12 +100,12 @@ public:
 	{
 		set<pair<int, int> > grupo;
 
-		if (board[fila * *columns + columna] != 0)
+		if (board[fila * columns + columna] != 0)
 		{
 			int *mascara = new int[total];
 			memset(mascara, 0, sizeof(int) * total);
 
-			algoritmo(fila * *columns + columna, mascara, grupo);
+			algoritmo(fila * columns + columna, mascara, grupo);
 			if (grupo.size() < 2)
 				grupo.clear();
 			delete [] mascara;
@@ -124,38 +124,38 @@ public:
 	*/
 	void algoritmo(int celda, int *mascara, set<pair<int, int> > &grupo) const
 	{
-		int fila = celda / *columns;
-		int columna = celda % *columns;
+		int fila = celda / columns;
+		int columna = celda % columns;
 
 		// Introducimos la casilla actual al grupo y la marcamos.
 		grupo.insert(pair<int, int>(columna, fila));
 		mascara[celda] = 1;
 
 		// Comprobamos hacia dónde hay que inundar.
-		if (columna + 1 < *columns)
+		if (columna + 1 < columns)
 		{
-			int izquierda = fila * *columns + (columna + 1);
+			int izquierda = fila * columns + (columna + 1);
 			if (mascara[izquierda] == 0 && board[celda] == board[izquierda])
 				algoritmo(izquierda, mascara, grupo);
 		}
 
 		if (columna - 1 >= 0)
 		{
-			int derecha = fila * *columns + (columna - 1);
+			int derecha = fila * columns + (columna - 1);
 			if (mascara[derecha] == 0 && board[celda] == board[derecha])
 				algoritmo(derecha, mascara, grupo);
 		}
 
 		if (fila - 1 >= 0)
 		{
-			int arriba = (fila - 1) * *columns + columna;
+			int arriba = (fila - 1) * columns + columna;
 			if (mascara[arriba] == 0 && board[celda] == board[arriba])
 				algoritmo(arriba, mascara, grupo);
 		}
 
-		if (fila + 1 < *rows)
+		if (fila + 1 < rows)
 		{
-			int abajo = (fila + 1) * *columns + columna;
+			int abajo = (fila + 1) * columns + columna;
 			if (mascara[abajo] == 0 && board[celda] == board[abajo])
 				algoritmo(abajo, mascara, grupo);
 		}
@@ -193,9 +193,9 @@ public:
 private:
 
     int *board;
-    int *rows;
-    int *columns;
-    int *colors;
+	int rows;
+	int columns;
+	int colors;
 	int total;
 	int restantes;
 
