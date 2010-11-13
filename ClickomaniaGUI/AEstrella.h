@@ -104,7 +104,6 @@ class AEstrella
 				listaCerrada.sort2();
 			}
 
-			cout << "-----------------------------------------------------------" << endl;
 			cout << "Tamaño de la lista abierta: " << listaAbierta.size() << endl;
 			cout << "Tamaño de la lista cerrada: " << listaCerrada.size() << endl;
 
