@@ -128,10 +128,6 @@ class NodoAEstrella
 		NodoAEstrella(const NodoAEstrella &origen)
 		{
 			board = NULL;
-			/*padre = NULL;
-			g = 0;
-			h = 0;
-			f = 0;*/
 			*this = origen;
 		}
 
@@ -143,11 +139,6 @@ class NodoAEstrella
 		{
 			if (board != NULL)
 				delete board;
-			/*padre = NULL;
-			movimiento = pair<int, int>();
-			g = 0;
-			h = 0;
-			f = 0;*/
 		}
 
 		/**

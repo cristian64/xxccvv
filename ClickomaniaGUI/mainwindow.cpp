@@ -229,27 +229,30 @@ void MainWindow::on_tableWidget_cellEntered(int row, int column)
 // Ejecuta el algoritmo AEstrella sobre el tablero Board y muestra los resultados por pantalla.
 void MainWindow::on_pushButton_3_clicked()
 {	
-	QTime tiempo;
-	tiempo.start();
-
-	AEstrella aestrella;
-	pair<int, list<pair<int, int> > > resultado = aestrella.run(*board);
-
-	QString tiempoStr = QString::number((tiempo.elapsed() / 1000) / 60) + "m " + QString::number((tiempo.elapsed() / 1000) % 60) + "s " + QString::number(tiempo.elapsed() % 1000) + "ms";
-	ui->label_9->setText(tiempoStr);
-
-	QString flujo;
-	for (list<pair<int, int> >::iterator i = resultado.second.begin(); i != resultado.second.end(); i++)
+	if (board != NULL)
 	{
-		flujo += QString::fromStdString("(") + QString::number((*i).first) + QString::fromStdString(", ") + QString::number((*i).second) + QString::fromStdString(") ");
-	}
-	flujo += QString::number(resultado.first);
-	ui->lineEdit->setText(flujo);
+		QTime tiempo;
+		tiempo.start();
 
-	cout << ui->listWidget->selectedItems().at(0)->text().toStdString() << endl;
-	cout << flujo.toStdString() << endl;
-	cout << tiempoStr.toStdString() << endl;
-	cout << "-----------------------------------------------------------" << endl;
+		AEstrella aestrella;
+		pair<int, list<pair<int, int> > > resultado = aestrella.run(*board);
+
+		QString tiempoStr = QString::number((tiempo.elapsed() / 1000) / 60) + "m " + QString::number((tiempo.elapsed() / 1000) % 60) + "s " + QString::number(tiempo.elapsed() % 1000) + "ms";
+		ui->label_9->setText(tiempoStr);
+
+		QString flujo;
+		for (list<pair<int, int> >::iterator i = resultado.second.begin(); i != resultado.second.end(); i++)
+		{
+			flujo += QString::fromStdString("(") + QString::number((*i).first) + QString::fromStdString(", ") + QString::number((*i).second) + QString::fromStdString(") ");
+		}
+		flujo += QString::number(resultado.first);
+		ui->lineEdit->setText(flujo);
+
+		cout << ui->listWidget->selectedItems().at(0)->text().toStdString() << endl;
+		cout << flujo.toStdString() << endl;
+		cout << tiempoStr.toStdString() << endl;
+		cout << "-----------------------------------------------------------" << endl;
+	}
 }
 
 // Se limpia el tablero.
@@ -282,7 +285,7 @@ void MainWindow::on_pushButton_21_clicked()
 			if (fichero.open(QFile::WriteOnly))
 			{
 				QTextStream flujo(&fichero);
-				flujo << QString::fromStdString(board->toString()) << endl; //TODO, guardar el tablero y no una mierdaca...
+				flujo << QString::fromStdString(board->toString()) << endl;
 				fichero.close();
 			}
 		}
