@@ -91,11 +91,31 @@ public:
 	*/
 	NodoAEstrella* getNodo(NodoAEstrella *nodo) const
 	{
-		set<NodoAEstrella*, Comparador>::iterator i = lista.find(nodo);
+		/*set<NodoAEstrella*, Comparador>::iterator i = lista.find(nodo);
 		if (i == lista.end())
 			return NULL;
 		else
-			return *i;
+			return *i;*/
+
+		// Se recorre la lista de nodos manualmente en busca de un nodo que coincida.
+		for (set<NodoAEstrella*, Comparador>::iterator i = lista.begin(); i != lista.end(); i++)
+		{
+			NodoAEstrella *anterior = *i;
+
+			// En este caso, no se comprueba con F porque es variante para 2 nodos iguales.
+			if (anterior->getH() == nodo->getH())
+			{
+				if (anterior->getBoard()->getRestantes() == nodo->getBoard()->getRestantes())
+				{
+					int *tablero1 = anterior->getBoard()->getBoard();
+					int *tablero2 = nodo->getBoard()->getBoard();
+					int total = anterior->getBoard()->getTotal();
+					if (memcmp(tablero1, tablero2, total * sizeof (int)) == 0)
+						return anterior;
+				}
+			}
+		}
+		return NULL;
 	}
 
 	/**
