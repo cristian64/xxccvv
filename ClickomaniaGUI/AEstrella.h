@@ -10,6 +10,7 @@
 #include <set>
 #include <list>
 #include <iostream>
+#include <ctime>
 
 using namespace std;
 
@@ -25,6 +26,10 @@ class AEstrella
 		*/
 		pair<int, list<pair<int, int> > > run(const Board &board) const
 		{
+			cout << "Optimista: " << board.optimisticBound() << endl;
+			cout << "Entropica: " << board.entropyBound() << endl;
+			time_t t1 = time(NULL);
+
 			// Definición de ambas listas (al salirse de ámbito se liberará la memoria de cada nodo introducido en ellas).
 			SetAEstrella listaCerrada;
 			HeapAEstrella listaAbierta;
@@ -78,6 +83,7 @@ class AEstrella
 						}
 						else
 						{
+
 							#ifndef NO_COMPROBAR
 							// Pasamos de las comprobaciones de la lista abierta y lo introducimos directamente.
 							listaAbierta.push(descendiente);
@@ -126,6 +132,9 @@ class AEstrella
 			}
 			movimientos.erase(movimientos.begin());
 			resultado.second = movimientos;
+
+			//el resultado debe mostrarse aqui, a veces tarda segundos en liberar la memoria.
+			cout << "TIEMPO: "<< difftime(time(NULL), t1) << endl;
 
 			return resultado;
 		}

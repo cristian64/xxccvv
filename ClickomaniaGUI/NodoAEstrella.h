@@ -31,17 +31,17 @@ class NodoAEstrella
 		/**
 		 * Puntuación con la que se ha alcanzado este tablero. Si no existe el padre, esta puntuación es 0.
 		*/
-		int g;
+		float g;
 
 		/**
 		 * Representa el valor heurístico del tablero. Sólo se calcula una vez al asignar el tablero al nodo.
 		*/
-		int h;
+		float h;
 
 		/**
 		 * Valor total del tablero considerando la puntuación real obtenida hasta el momento (G) y la heurística (H).
 		*/
-		int f;
+		float f;
 
 		/**
 		 * Hash para el nodo.
@@ -71,7 +71,8 @@ class NodoAEstrella
 		*/
 		void recalcularH()
 		{
-			h = board->optimisticBound();
+			//h = board->optimisticBound();
+			h = board->entropyBound();
 			recalcularF();
 		}
 
@@ -80,7 +81,10 @@ class NodoAEstrella
 		*/
 		void recalcularF()
 		{
-			f = g + h;
+			//float w = 0.55;
+			//f = w * g + (1 - w) * h;
+			//evita que ramifique tanto, relajacion.
+			f = g + 0.8 * h;
 		}
 
 		/**
