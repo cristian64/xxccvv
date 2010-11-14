@@ -33,6 +33,10 @@ private:
 				// Pero podría ser cualquier otro criterio, porque sólo se utiliza esta clase como conjunto matemático sin orden.
 				// De hecho, los métodos que se proporcionan no permiten extraer el máximo o el mínimo como sí haría un heap o
 				// cola de prioridad.
+				/*if (n1->getHash() > n2->getHash())
+					comparacion = true;
+				else if (n1->getHash() < n2->getHash())
+					comparacion = false;*/
 				if (n1->getH() > n2->getH())
 					comparacion = true;
 				else if (n1->getH() < n2->getH())
@@ -46,16 +50,11 @@ private:
 					int *tablero1 = n1->getBoard()->getBoard();
 					int *tablero2 = n2->getBoard()->getBoard();
 					int total = n1->getBoard()->getTotal();
-					for (int i = 0; i < total; i++)
-					{
-						if (tablero1[i] < tablero2[i])
-							comparacion = true;
-						else if (tablero1[i] > tablero2[i])
-							comparacion = false;
-						else
-							continue;
-						break;
-					}
+					int resultado = memcmp(tablero1, tablero2, total * sizeof(int));
+					if (resultado < 0)
+						comparacion = true;
+					else if (resultado > 0)
+						comparacion = false;
 				}
 
 				return comparacion;
@@ -81,9 +80,15 @@ public:
 	 *
 	 * @param nodo Nodo que se va a introducir en la lista.
 	*/
-	void push(NodoAEstrella *nodo)
+	bool push(NodoAEstrella *nodo)
 	{
-		lista.insert(nodo);
+		pair<set<NodoAEstrella*, Comparador>::iterator, bool> resultado = lista.insert(nodo);
+		if (!resultado.second)
+		{
+			delete nodo;
+			return false;
+		}
+		return true;
 	}
 
 	/**

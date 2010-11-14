@@ -40,7 +40,8 @@ class AEstrella
 			{
 				// Se extrae el nodo que hay encima de la cola de prioridad y pasa a la lista cerrada.
 				NodoAEstrella* nodoActual = listaAbierta.pop();
-				listaCerrada.push(nodoActual);
+				if (!listaCerrada.push(nodoActual))
+					continue;
 
 				// Se genera toda su descendencia.
 				list<NodoAEstrella*> descendencia = nodoActual->generarDescendencia();
@@ -70,6 +71,10 @@ class AEstrella
 						}
 						else
 						{
+							#ifndef NO_COMPROBAR
+							// Pasamos de las comprobaciones de la lista abierta y lo introducimos directamente.
+							listaAbierta.push(descendiente);
+							#else
 							// Se comprueba si está en la lista abierta.
 							NodoAEstrella *anterior = listaAbierta.getNodo(descendiente);
 							if (anterior != NULL)
@@ -92,6 +97,7 @@ class AEstrella
 								// Si no estaba en la lista abierta, se introduce.
 								listaAbierta.push(descendiente);
 							}
+							#endif
 						}
 					}
 				}
