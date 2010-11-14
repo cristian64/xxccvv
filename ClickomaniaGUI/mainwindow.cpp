@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
 		for (int j = 0; j < 20; j++)
 		{
 			ui->tableWidget->setItem(i, j, new QTableWidgetItem());
+			ui->tableWidget->item(i, j)->setFlags(Qt::ItemIsEnabled);
 		}
 	}
 

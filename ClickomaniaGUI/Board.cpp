@@ -8,14 +8,12 @@
 #include "Board.h"
 #include <fstream>
 #include <string.h>
-#include <cassert>
 #include <iostream>
 #include <queue>
 #include <set>
 #include <list>
 #include <utility>
 #include <cmath>
-#include <cassert>
 #include <sstream>
 #include <stdlib.h>
 
@@ -211,8 +209,7 @@ int Board::score(std::set<std::pair<int, int> > tiles) {
  */
 int Board::removeGroup(std::set<std::pair<int, int> > tiles) {
     std::set<std::pair<int, int> >::iterator it;
-    for (it = tiles.begin(); it != tiles.end(); it++) {
-        assert(this->getPosition(it->first, it->second) != 0);
+	for (it = tiles.begin(); it != tiles.end(); it++) {
         this->setPosition(it->first, it->second, 0);
 
     }
@@ -300,8 +297,7 @@ void Board::show() const {
 }
 
 int Board::heuristic(Board* o) const {
-	if (o != NULL)
-		cout << "";
+	o = o;
     return this->optimisticBound();
 }
 

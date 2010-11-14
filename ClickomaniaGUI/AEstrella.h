@@ -63,6 +63,13 @@ class AEstrella
 					{
 						NodoAEstrella *descendiente = *i;
 
+						// Si el nodo generado no es potencialmente mejor que el encontrado hasta el momento, se destruye y se pasa al siguiente.
+						if (descendiente->getF() <= nodoFinal->getG())
+						{
+							delete descendiente;
+							continue;
+						}
+
 						// Se comprueba si está en la lista cerrada.
 						if (listaCerrada.getNodo(descendiente) != NULL)
 						{

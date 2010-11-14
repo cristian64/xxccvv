@@ -83,7 +83,6 @@ class NodoAEstrella
 			f = g + h;
 		}
 
-
 		/**
 		 * @brief Recalcula el hash para el nodo.
 		 *

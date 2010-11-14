@@ -33,10 +33,6 @@ private:
 				// Pero podría ser cualquier otro criterio, porque sólo se utiliza esta clase como conjunto matemático sin orden.
 				// De hecho, los métodos que se proporcionan no permiten extraer el máximo o el mínimo como sí haría un heap o
 				// cola de prioridad.
-				/*if (n1->getHash() > n2->getHash())
-					comparacion = true;
-				else if (n1->getHash() < n2->getHash())
-					comparacion = false;*/
 				if (n1->getH() > n2->getH())
 					comparacion = true;
 				else if (n1->getH() < n2->getH())
