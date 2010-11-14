@@ -41,17 +41,12 @@ private:
 				{
 					int *tablero1 = n1->getBoard()->getBoard();
 					int *tablero2 = n2->getBoard()->getBoard();
-					int total = n1->getBoard()->getTotal();
-					for (int i = 0; i < total; i++)
-					{
-						if (tablero1[i] < tablero2[i])
-							comparacion = true;
-						else if (tablero1[i] > tablero2[i])
-							comparacion = false;
-						else
-							continue;
-						break;
-					}
+					int total = n1->getBoard()->getTotal();					
+					int resultado = memcmp(tablero1, tablero2, total * sizeof(int));
+					if (resultado < 0)
+						comparacion = true;
+					else if (resultado > 0)
+						comparacion = false;
 				}
 
 				return comparacion;
@@ -77,9 +72,15 @@ public:
 	 *
 	 * @param nodo Nodo que se va a introducir en la lista.
 	*/
-	void push(NodoAEstrella *nodo)
+	bool push(NodoAEstrella *nodo)
 	{
-		lista.insert(nodo);
+		pair<set<NodoAEstrella*, Comparador>::iterator, bool> resultado = lista.insert(nodo);
+		if (!resultado.second)
+		{
+			delete nodo;
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -151,7 +152,7 @@ public:
 	}
 
 	/**
-	 * @brief Esa referencia será eliminada de la lista.	 *
+	 * @brief Esa referencia será eliminada de la lista.
 	 *
 	 * @param nodo Nodo que se va a comprobar si ya está en la lista para eliminarlo.
 	*/
