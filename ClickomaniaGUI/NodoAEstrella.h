@@ -4,6 +4,7 @@
 #include <utility>
 #include <list>
 #include "Board.h"
+#include <sstream>
 
 using namespace std;
 
@@ -43,6 +44,11 @@ class NodoAEstrella
 		int f;
 
 		/**
+		 * Hash para el nodo.
+		*/
+		unsigned long int hash;
+
+		/**
 		 * @brief Recalcula la puntuación a partir del movimiento con el que se llegó al tablero
 		 * y el nodo padre. Es decir, es la suma de la puntuación del tablero anterior y la cantidad
 		 * de puntos que se obtiene al aplicar el movimiento sobre ese tablero anterior.
@@ -78,6 +84,23 @@ class NodoAEstrella
 		}
 
 
+		/**
+		 * @brief Recalcula el hash para el nodo.
+		 *
+		*/
+		void recalcularHash()
+		{
+			stringstream flujo;
+			int *tablero = board->getBoard();
+			int total = min(board->getTotal(), 19);
+			for (int i = 0; i < total; i++)
+			{
+				flujo << tablero[i];
+			}
+			hash = strtoul(flujo.str().c_str(), NULL, 0);
+		}
+
+
 	public:
 
 		/**
@@ -98,6 +121,7 @@ class NodoAEstrella
 			f = 0;
 			recalcularG();
 			recalcularH();
+			//recalcularHash();
 		}
 
 		/**
@@ -117,6 +141,7 @@ class NodoAEstrella
 			f = 0;
 			recalcularG();
 			recalcularH();
+			//recalcularHash();
 		}
 
 		/**
@@ -159,6 +184,7 @@ class NodoAEstrella
 				g = origen.g;
 				h = origen.h;
 				f = origen.f;
+				hash = origen.hash;
 			}
 			return *this;
 		}
@@ -186,6 +212,11 @@ class NodoAEstrella
 		Board* getBoard() const
 		{
 			return board;
+		}
+
+		unsigned long int getHash() const
+		{
+			return hash;
 		}
 
 		/**
