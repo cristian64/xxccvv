@@ -41,7 +41,7 @@ private:
 				{
 					int *tablero1 = n1->getBoard()->getBoard();
 					int *tablero2 = n2->getBoard()->getBoard();
-					int total = n1->getBoard()->getTotal();					
+					int total = n1->getBoard()->getTotal();
 					int resultado = memcmp(tablero1, tablero2, total * sizeof(int));
 					if (resultado < 0)
 						comparacion = true;
