@@ -22,20 +22,23 @@ using namespace std;
 //por probar, pero no aporta nada, no creo que merezca la pena hacerlo pr0
 //eso implicaria asi sin pensar mucho uno rollo tipo singleton con contador
 //de usos para liberarlo con el ultimo tablero instanciado.
-int Board::mascara[300];
+int Board::useMask[400];
 
 //Ver Board::entropicBound()
 double Board::log2colors;
+double Board::ln2 = log(2); //ln(2) precalculado
 
-Board::Board(int colores, int filas, int columnas) {
-	this->rows = filas;
-	this->columns = columnas;
-	this->colors = colores;
-	total = restantes = rows * columns;
-	this->board = new int[filas * columnas];
-
-	for (int i = 0; i < filas * columnas; i++)
-		board[i] = rand()%colores + 1;
+Board::Board(int colors, int rows, int columns) {
+	this->rows = rows;
+	this->columns = columns;
+	this->colors = colors;
+	total = remaining = rows * columns;
+	this->board = new int[rows * columns];
+		srand(time(NULL));
+	for (int i = 0; i < rows * columns; i++) {
+		board[i] = rand() % colors + 1;
+	}
+	Board::log2colors = log2(this->colors);
 }
 
 Board::Board(const std::string path) {
@@ -48,7 +51,7 @@ Board::Board(const std::string path) {
 	is >> this->rows;
 	is >> this->columns;
 	is >> this->colors;
-	total = restantes = rows * columns;
+	total = remaining = rows * columns;
 	this->board = new int [total];
 	for (int i = 0; i < total; i++) {
 		is >> this->board[i];
@@ -56,14 +59,14 @@ Board::Board(const std::string path) {
 	Board::log2colors = log2(this->colors);
 }
 
-Board::Board(const Board& orig) {
-	this->rows = orig.rows;
-	this->columns = orig.columns;
-	this->colors = orig.colors;
-	total = orig.total;
-	restantes = orig.restantes;
+Board::Board(const Board& o) {
+	this->rows = o.rows;
+	this->columns = o.columns;
+	this->colors = o.colors;
+	total = o.total;
+	remaining = o.remaining;
 	this->board = new int[total];
-	memcpy(this->board, orig.board, total * sizeof (int));
+	memcpy(this->board, o.board, total * sizeof (int));
 }
 
 Board& Board::operator=(const Board& orig) {
@@ -75,7 +78,7 @@ Board& Board::operator=(const Board& orig) {
 		this->columns = orig.columns;
 		this->colors = orig.colors;
 		total = orig.total;
-		restantes = orig.restantes;
+		remaining = orig.remaining;
 		this->board = new int[total];
 		memcpy(this->board, orig.board, total * sizeof (int));
 	}
@@ -83,8 +86,7 @@ Board& Board::operator=(const Board& orig) {
 }
 
 bool Board::operator==(const Board& o) const {
-	if (restantes != o.restantes)
-	{
+	if (remaining != o.remaining) {
 		return false;
 	}
 
@@ -130,13 +132,11 @@ void Board::setRows(int rows) {
 	this->rows = rows;
 }
 
-int Board::getRestantes() const
-{
-	return restantes;
+int Board::getRemaining() const {
+	return remaining;
 }
 
-int Board::getTotal() const
-{
+int Board::getTotal() const {
 	return total;
 }
 
@@ -187,7 +187,7 @@ void Board::gravity() {
 }
 
 list<set<std::pair<int, int> > > Board::getGroupMoves() const {
-	return getGrupos();
+	return getGroups();
 }
 
 pair<int, int> Board::getMove(std::set<std::pair<int, int> > groupMove) const {
@@ -195,7 +195,7 @@ pair<int, int> Board::getMove(std::set<std::pair<int, int> > groupMove) const {
 }
 
 std::set<std::pair<int, int> > Board::getGroupMove(int x, int y) const {
-	return getGrupo(y, x);
+	return getGroup(y, x);
 }
 
 /*
@@ -217,68 +217,80 @@ int Board::removeGroup(std::set<std::pair<int, int> > tiles) {
 		this->setPosition(it->first, it->second, 0);
 	}
 	this->gravity();
-	restantes -= tiles.size();
+	remaining -= tiles.size();
 	return tiles.size()*(tiles.size() - 1);
 }
 
 // Realiza una estimación optimista del valor del tablero en el mejor caso.
-int Board::optimisticBound() const {
-	int valorCota = 0;
-	int ocurrencias[this->colors];
-	memset(ocurrencias, 0, sizeof (int) * this->colors);
 
+int Board::optimisticBound() const {
+	int maxScore = 0;
+	int count[this->colors];
+	memset(count, 0, sizeof (int) * this->colors);
 
 	// Recorremos el tablero contando únicamente la cantidad de fichas de cada color.
 	for (int i = 0; i < total; i++) {
 		if (this->board[i] > 0) {
-			ocurrencias[this->board[i] - 1]++;
+			count[this->board[i] - 1]++;
 		}
 	}
 
-
 	for (int i = 0; i< this->colors; i++) {
-		valorCota += ocurrencias[i]*(ocurrencias[i] - 1);
+		maxScore += count[i]*(count[i] - 1);
 	}
-	return valorCota;
+	return maxScore;
 }
 
+// esta centrado en 0, ahora mismo no vale para una mierda
+
+double taylorLog2(double x, int grado) {
+	x--;
+	double r = 0;
+	for (int i = 1; i <= grado; i++) {
+		r += pow(-1, i + 1) * pow(x, i) / (i * Board::ln2);
+	}
+	return r;
+}
 
 //Estima el valor maximo del tablero aplicando la entropia
 //TODO PRIMORDIAL Hay que buscar la serie de taylor del log2, el log es una operacion costosisima.
 //En 100 segundos de ejecucion el log2 ocupa 14 segundos
 //Precalculando el log2(nColores) baja a 10 segundos
 //el 7 baja de ~47 a ~<45 segundos
+
 float Board::entropyBound() const {
 
-	int ocurrencias[this->colors + 1];
-	memset(ocurrencias, 0, sizeof (int) * (this->colors + 1));
+	int count[this->colors + 1];
+	memset(count, 0, sizeof (int) * (this->colors + 1));
 
 	// Recorremos el tablero contando únicamente la cantidad de fichas de cada color.
 
 	for (int i = 0; i < total; i++) {
-		ocurrencias[this->board[i]]++;
+		count[this->board[i]]++;
 	}
 
-	int puntosMaximos = 0;
+	int maxScore = 0;
 	for (int i = 1; i< this->colors + 1; i++) {
-		puntosMaximos += ocurrencias[i]*(ocurrencias[i] - 1);
+		maxScore += count[i]*(count[i] - 1);
 	}
 
-	double entropia = 0;
+	double entropy = 0;
 	double prob = 0;
 	//desde 1 para no contar la aportacion de las zonas vacias
-	for (int i = 1; i< this->colors+1; i++) {
-		if (ocurrencias[i] > 0) {
-			prob = ocurrencias[i] / (float) total;
-			entropia += log2(prob) * prob;
+	for (int i = 1; i< this->colors + 1; i++) {
+		if (count[i] > 0) {
+			prob = count[i] / (float) total;
+			entropy += log2(prob) * prob;
+			//entropia +=taylorLog2(prob, 20)*prob;
 		}
 	}
-	entropia = -entropia;
+
+	entropy = -entropy;
 
 	//double entropiaNormalizada = entropia / log(this->colors + 1);
-	//double entropiaNormalizada = entropia / log2(this->colors);
-	double entropiaNormalizada = entropia / Board::log2colors;
-	return (puntosMaximos * entropiaNormalizada);
+	double normalicedEntropy = entropy / Board::log2colors;
+
+	return (maxScore * normalicedEntropy);
 }
 
 void Board::showMoves(std::list<std::set<std::pair<int, int> > > lista) {
@@ -325,4 +337,84 @@ string Board::toString() const {
 	}
 
 	return flujo.str();
+}
+
+/**
+ * @brief Calcula el grupo de la casilla indicada y lo devuelve.
+ *
+ * @param fila Fila de la celda.
+ * @param columna Columna de la celda.
+ * @return Devuelve el grupo de la casilla indicada por la fila y la columna.
+ */
+set<pair<int, int> > Board::getGroup(int row, int column) const {
+	set<pair<int, int> > group;
+
+	if (board[row * columns + column] != 0) {
+		memset(useMask, 0, sizeof (int) * total);
+		floodFill(row * columns + column, group);
+		if (group.size() < 2) {
+			group.clear();
+		}
+	}
+
+	return group;
+}
+
+void Board::floodFill(int tile, set<pair<int, int> > &group) const {
+	int row = tile / columns;
+	int column = tile % columns;
+
+	// Introducimos la casilla actual al grupo y la marcamos.
+	group.insert(pair<int, int>(column, row));
+	useMask[tile] = 1;
+
+	// Comprobamos hacia dónde hay que inundar.
+	if (column + 1 < columns) {
+		int left = row * columns + (column + 1);
+		if (useMask[left] == 0 && board[tile] == board[left]) {
+			floodFill(left, group);
+		}
+	}
+
+	if (column - 1 >= 0) {
+		int right = row * columns + (column - 1);
+		if (useMask[right] == 0 && board[tile] == board[right]) {
+			floodFill(right, group);
+		}
+	}
+
+	if (row - 1 >= 0) {
+		int up = (row - 1) * columns + column;
+		if (useMask[up] == 0 && board[tile] == board[up]) {
+			floodFill(up, group);
+		}
+	}
+
+	if (row + 1 < rows) {
+		int down = (row + 1) * columns + column;
+		if (useMask[down] == 0 && board[tile] == board[down]) {
+			floodFill(down, group);
+		}
+	}
+}
+
+list<set<pair<int, int> > > Board::getGroups() const {
+	list<set<pair<int, int> > > moves;
+	memset(useMask, 0, sizeof (int) * total);
+
+	// Se recorre el tablero. Cada casilla se procesa una vez (nos ayudamos de la máscara para ello).
+	for (int i = 0; i < total; i++) {
+		// Si no se ha procesado, se procesa aplicando el algoritmo recursivo.
+		if (useMask[i] == 0 && board[i] != 0) {
+			set<pair<int, int> > group;
+			floodFill(i, group);
+			if (group.size() >= 2) {
+				moves.push_back(group);
+			}
+		}
+	}
+
+	// Se libera la memoria y se devuelve el resultado.
+	//delete [] mascara;
+	return moves;
 }

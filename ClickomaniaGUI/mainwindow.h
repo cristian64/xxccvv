@@ -5,25 +5,24 @@
 #include <QListWidgetItem>
 #include <iostream>
 #include "Board.h"
-#include "AEstrella.h"
+#include "AStar.h"
 
 using namespace std;
 
 namespace Ui {
-    class MainWindow;
+	class MainWindow;
 }
 
-class MainWindow : public QMainWindow
-{
-    Q_OBJECT
+class MainWindow : public QMainWindow {
+	Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+	explicit MainWindow(QWidget *parent = 0);
+	~MainWindow();
 	Board *board;
 
 private:
-    Ui::MainWindow *ui;
+	Ui::MainWindow *ui;
 	static QColor intToColor(int color);
 	void actualizarTabla();
 

@@ -25,6 +25,7 @@ public:
 	int getColumns() const;
 	void setColumns(int columns);
 	int getRows() const;
+	int getRemaining() const;
 	void setRows(int rows);
 	int getRestantes() const;
 	int getTotal() const;
@@ -48,6 +49,7 @@ public:
 	 */
 	void gravity();
 
+
 	/*
 	 * elimina (pone a 0) las baldosas que pertenecen a un grupo
 	 * Tambien reajusta el tablero segun la gravedad
@@ -64,30 +66,9 @@ public:
 	 * @brief
 	 *
 	 * @return Devuelve la lista de grupos que hay en el tablero.
-	*/
-	list<set<pair<int, int> > > getGrupos() const
-	{
-		list<set<pair<int, int> > > movimientos;
-		//int *mascara = new int[total];
-		memset(mascara, 0, sizeof(int) * total);
+	 */
+	list<set<pair<int, int> > > getGroups() const;
 
-		// Se recorre el tablero. Cada casilla se procesa una vez (nos ayudamos de la máscara para ello).
-		for (int i = 0; i < total; i++)
-		{
-			// Si no se ha procesado, se procesa aplicando el algoritmo recursivo.
-			if (mascara[i] == 0 && board[i] != 0)
-			{
-				set<pair<int, int> > grupo;
-				algoritmo(i, mascara, grupo);
-				if (grupo.size() >= 2)
-					movimientos.push_back(grupo);
-			}
-		}
-
-		// Se libera la memoria y se devuelve el resultado.
-		//delete [] mascara;
-		return movimientos;
-	}
 
 	/**
 	 * @brief Calcula el grupo de la casilla indicada y lo devuelve.
@@ -95,24 +76,8 @@ public:
 	 * @param fila Fila de la celda.
 	 * @param columna Columna de la celda.
 	 * @return Devuelve el grupo de la casilla indicada por la fila y la columna.
-	*/
-	set<pair<int, int> > getGrupo(int fila, int columna) const
-	{
-		set<pair<int, int> > grupo;
-
-		if (board[fila * columns + columna] != 0)
-		{
-			//int *mascara = new int[total];
-			memset(mascara, 0, sizeof(int) * total);
-
-			algoritmo(fila * columns + columna, mascara, grupo);
-			if (grupo.size() < 2)
-				grupo.clear();
-			//delete [] mascara;
-		}
-
-		return grupo;
-	}
+	 */
+	set<pair<int, int> > getGroup(int row, int column) const;
 
 	/**
 	 * @brief Recorre el tablero recursivamente por inundación buscando las casillas del mismo color y las
@@ -121,46 +86,9 @@ public:
 	 * @param celda Celda que se va a comprobar.
 	 * @param mascara Vector que indica si la celda ha sido ocupada o no.
 	 * @param grupo Conjunto de celdas donde se coleccionarán las celdas. Tiene un valor por referencia.
-	*/
-	//void algoritmo(int celda, int *mascara, set<pair<int, int> > &grupo) const
-	void algoritmo(int celda, int *mascara, set<pair<int, int> > &grupo) const
-	{
-		int fila = celda / columns;
-		int columna = celda % columns;
+	 */
 
-		// Introducimos la casilla actual al grupo y la marcamos.
-		grupo.insert(pair<int, int>(columna, fila));
-		mascara[celda] = 1;
-
-		// Comprobamos hacia dónde hay que inundar.
-		if (columna + 1 < columns)
-		{
-			int izquierda = fila * columns + (columna + 1);
-			if (mascara[izquierda] == 0 && board[celda] == board[izquierda])
-				algoritmo(izquierda, mascara, grupo);
-		}
-
-		if (columna - 1 >= 0)
-		{
-			int derecha = fila * columns + (columna - 1);
-			if (mascara[derecha] == 0 && board[celda] == board[derecha])
-				algoritmo(derecha, mascara, grupo);
-		}
-
-		if (fila - 1 >= 0)
-		{
-			int arriba = (fila - 1) * columns + columna;
-			if (mascara[arriba] == 0 && board[celda] == board[arriba])
-				algoritmo(arriba, mascara, grupo);
-		}
-
-		if (fila + 1 < rows)
-		{
-			int abajo = (fila + 1) * columns + columna;
-			if (mascara[abajo] == 0 && board[celda] == board[abajo])
-				algoritmo(abajo, mascara, grupo);
-		}
-	}
+	void floodFill(int tile, set<pair<int, int> > &group) const;
 
 	/*
 	 * Devuelve la coordenada que define el movimiento (podria ser una cualquiera)
@@ -190,15 +118,21 @@ public:
 
 	std::list<std::pair<Board*, int> > childList() const;
 
+	//log(2) precalculado
+	static double ln2;
+
+	static void setUseMaskSize(int size);
+	static void deleteUseMask();
+
 private:
-	static int mascara[300];
+	static int useMask[400];
 	static double log2colors;
 	int *board;
 	int rows;
 	int columns;
 	int colors;
 	int total;
-	int restantes;
+	int remaining;
 
 };
 
